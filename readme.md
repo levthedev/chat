@@ -1,16 +1,16 @@
 ## architecture
 
-  #### customer client
+  ### customer client
     * plain HTML/CSS widget for client's loaded by JS async snippet
     * loads conversation/message history (based on IP?)
     * hitting enter/send creates HTTP request with message body, timestamp, current page, etc
 
-  #### company client
+  ### company client
     * dashboard has all conversations
     * conversations have messages and completion (boolean), also agents in the future
     * hitting enter/send creates HTTP request with message body, timestamp, current page, etc
 
-  #### server
+  ### server
     * when triggered by customer client, alerts company (by email, Slack, SMS, HTTP, and dashboard)
     * persists messages to DB (DBaaS?)
     * adds analytics to user in DB - # of messages, # of sessions, email, name, etc
@@ -18,7 +18,7 @@
 
   Clients ranked by importance - dashboard, email, Slack, HTTP, SMS
 
-_____________________________
+
 ## pricing
 
   * free open source version w/branding (License is violated if removed)
@@ -27,7 +27,7 @@ _____________________________
   * usage would just take cloud FaaS bill and multiply it by some constant (3x? 5x? 10x?)
   * paid version also would have no branding
 
-_____________________________
+
 ## design
 
   * all client side JS needs to work on any browser that is 4 years old - no ES6
