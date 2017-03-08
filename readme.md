@@ -33,3 +33,9 @@ Clients ranked by importance - dashboard, email, Slack, HTTP, SMS
 * all client side JS needs to work on any browser that is 4 years old - no ES6
 * resend has best overall design
 * intercom has best site design
+
+
+## security
+
+* customer client needs server url to decide which server to use
+* server needs to lock customer client to only work on pre approved client urls
