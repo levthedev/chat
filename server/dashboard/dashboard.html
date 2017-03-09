@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      var socket = io();
+    </script>
+    <script src="http://127.0.0.1:3000/dashboard.js"></script>
+    <link rel='stylesheet' href='./dashboard.css' type='text/css'>
+  </head>
+  <body>
+    <div id='container'>
+      <div id='conversation'>
+        <div id='header'>
+          Conversation with Lev
+        </div>
+        <div id='messages'>
+        </div>
+        <div id="inputWrapper">
+          <input id="input" placeholder="Send a message..."></input>
+          <div id="powered"><a href="https://github.com/levthedev">Powered by OpenChat</a></div>
+        </div>
+      </div>
+      <div id='closed' onclick="toggleChat('closed')">
+      </div>
+      <div id='open' onclick="toggleChat('open')">
+      </div>
+    </div>
+  </body>
+</html>
