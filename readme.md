@@ -4,6 +4,8 @@
 * plain HTML/CSS widget for client's loaded by JS async snippet
 * loads conversation/message history (based on IP?)
 * hitting enter/send creates HTTP request with message body, timestamp, current page, etc
+* stored in CDN (Google?)
+* needs to apply CSS styles, be bundled with socket.io, and be minified
 
 ### company client
 * dashboard has all conversations
