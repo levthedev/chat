@@ -68,7 +68,7 @@ function submitChat(e) {
 }
 
 function createSocket() {
-  socket = io('http://127.0.0.1:3000/');
+  socket = io('http://localhost:3000/');
 
   socket.on('messageCreated', function(message) {
     var messagesNode = document.getElementById('messages');
@@ -143,23 +143,6 @@ function createChatWidget() {;
   powered.appendChild(poweredLink)
   container.appendChild(closed)
   container.appendChild(open)
-  // <div id='container'>
-  //   <div id='conversation'>
-  //     <div id='header'>
-  //       Conversation with Lev
-  //     </div>
-  //     <div id='messages'>
-  //     </div>
-  //     <div id="inputWrapper">
-  //       <input id="input" placeholder="Send a message..."></input>
-  //       <div id="powered"><a href="https://github.com/levthedev">Powered by OpenChat</a></div>
-  //     </div>
-  //   </div>
-  //   <div id='closed' onclick="toggleChat('closed')">
-  //   </div>
-  //   <div id='open' onclick="toggleChat('open')">
-  //   </div>
-  // </div>
 }
 
 document.addEventListener('DOMContentLoaded', function(event) {
