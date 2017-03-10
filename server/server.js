@@ -1,8 +1,8 @@
 const app = require('express')()
 const Sequelize = require('sequelize')
 const session = require('express-session')
-const http = require('http').Server(app);
-const io = require('socket.io')(http);
+const http = require('http').Server(app)
+const io = require('socket.io')(http)
 
 const sequelize = new Sequelize('sqlite://database.db/')
 
@@ -16,6 +16,8 @@ const User = sequelize.define('user', {
   email: { type: Sequelize.STRING },
   handle: { type: Sequelize.STRING }
 })
+
+User.hasMany(Message)
 
 Message.sync().then(() => {
   return Message.create({ text: 'Welcome to Everydev!', sender: 'company' })
@@ -37,8 +39,8 @@ sessionMiddleware = session({
 app.use(sessionMiddleware)
 
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "localhost:3000")
-  res.header("Access-Control-Allow-Credentials", 'true');
+  res.header('Access-Control-Allow-Origin', 'localhost:3000')
+  res.header('Access-Control-Allow-Credentials', 'true')
   next()
 })
 
@@ -53,9 +55,9 @@ app.get('/chat.js', (req, res) => {
   User.findAll({ where: { handle: req.session.user }}).then(users => {
     if (!users[0]) {
       User.create({ handle: req.session.user })
-      console.log(req.session.user)
+      console.log('created ', req.session.user)
     } else {
-      // console.log('old user', req.session.user)
+      console.log(users[0].getMessages((ms) => console.log(ms)))
     }
   })
 })
@@ -72,6 +74,19 @@ app.get('/messages', (req, res) => {
   Message.findAll().then(messages => res.send(messages))
 })
 
+app.get('/users', (req, res) => {
+  User.findAll().then(users => {
+    users.forEach((user) => {
+      user.getMessages().then(messages => {
+        messages.forEach((msg) => {
+          console.log(`${user.dataValues.handle}: ${msg.dataValues.text}`)
+          console.log('****************\n\n')
+        })
+      })
+    })
+  })
+})
+
 io.use((socket, next) => {
   sessionMiddleware(socket.request, socket.request.res, next)
 })
@@ -81,6 +96,9 @@ io.on('connection', (socket) => {
     console.log(socket.request.session.user)
     Message.create({ text, sender: 'customer' }).then(message => {
       io.emit('messageCreated', message)
+      User.findAll({ where: { handle: socket.request.session.user } }).then(users => {
+        users[0].addMessage(message)
+      })
     })
   })
 })
