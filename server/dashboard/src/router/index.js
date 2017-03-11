@@ -1,15 +1,19 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import Hello from '@/components/Hello';
+import VueResource from 'vue-resource';
+import VueSocketio from 'vue-socket.io';
+import User from '@/components/User';
 
 Vue.use(Router);
+Vue.use(VueResource);
+Vue.use(VueSocketio, 'http://localhost:3000');
 
 export default new Router({
   routes: [
     {
-      path: '/',
-      name: 'Hello',
-      component: Hello,
+      path: '/users/:handle',
+      name: 'User',
+      component: User,
     },
   ],
 });

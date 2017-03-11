@@ -16,7 +16,7 @@ body {
   border-radius: 60px;
   width: 60px;
   height: 60px;
-  background-color: #0F7CBA;
+  background-color: mediumpurple;
   background-size: 32px 36px;
   background-repeat: no-repeat;
   background-position: center 14px;
@@ -36,7 +36,7 @@ body {
 #header {
   height: 75px;
   width: 380px;
-  background-color: #0F7CBA;
+  background-color: mediumpurple;
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
   text-align: center;
@@ -66,7 +66,7 @@ body {
   border-radius: 10px;
   background-color: #F8F8F8;
   overflow-x: hidden;
-  border: 1px solid #0F7CBA;
+  border: 1px solid mediumpurple;
 }
 
 #messages {
@@ -91,8 +91,8 @@ body {
   float: right;
   margin-right: 20px;
   color: #F8FAFD;
-  background-color: #0F7CBA;
-  border: 1px solid #0F7CBA;
+  background-color: mediumpurple;
+  border: 1px solid mediumpurple;
 }
 
 .company {
@@ -156,10 +156,10 @@ body {
   width: 380px;
   text-align: center;
   font-size: 12px;
-  color: #0F7CBA;
+  color: mediumpurple;
 }
 
 #powered a, #powered a:visited, #powered a:active {
   text-decoration: none;
-  color: #0F7CBA;
+  color: mediumpurple;
 }

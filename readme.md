@@ -17,6 +17,9 @@
 * persists messages to DB (DBaaS?)
 * adds analytics to user in DB - # of messages, # of sessions, email, name, etc
 * when triggered by company client (email, Slack, SMS, HTTP, or dashboard) adds message to DB, pushes to customer client (through widget or email)
+* users have messages, agents have messages, conversations have agents and users
+* users have name, email, ip address, location, # of sessions, page visit history
+* agents have username, password, name, profile picture, location
 
 Clients ranked by importance - dashboard, email, Slack, HTTP, SMS
 

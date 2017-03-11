@@ -14,8 +14,11 @@ const Message = sequelize.define('message', {
 const User = sequelize.define('user', {
   name: { type: Sequelize.STRING },
   email: { type: Sequelize.STRING },
-  handle: { type: Sequelize.STRING }
+  handle: { type: Sequelize.STRING },
+  color: { type: Sequelize.STRING }
 })
+
+let userRooms = []
 
 User.hasMany(Message)
 
@@ -39,25 +42,28 @@ sessionMiddleware = session({
 app.use(sessionMiddleware)
 
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'localhost:3000')
+  // res.header('Access-Control-Allow-Origin', 'localhost:3000')
+  res.header('Access-Control-Allow-Origin', '*')
   res.header('Access-Control-Allow-Credentials', 'true')
   next()
 })
 
-const colors = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet']
-const animals = ['cat', 'dog', 'fish', 'whale', 'dolphin', 'penguin', 'sloth']
+const adjectives = ['slow', 'fast', 'small', 'big', 'young', 'baby', 'happy', 'excited', 'sleepy', 'drowsy']
+const animals = ['cat', 'dog', 'fish', 'whale', 'dolphin', 'penguin', 'sloth', 'mouse', 'elephant', 'otter']
 
 app.get('/chat.js', (req, res) => {
   res.sendFile(__dirname + '/chat.js')
   sample = (array) => array[Math.floor(Math.random() * array.length)]
   let number = Math.floor(Math.random() * 1000)
-  req.session.user = req.session.user || [sample(colors), sample(animals), number].join('-')
+  req.session.user = req.session.user || [sample(adjectives), sample(animals), number].join('-')
+
   User.findAll({ where: { handle: req.session.user }}).then(users => {
     if (!users[0]) {
-      User.create({ handle: req.session.user })
+      const color = `hsl(${Math.floor(Math.random() * 360)}, 100%, 80%)`
+      User.create({ handle: req.session.user, color })
       console.log('created ', req.session.user)
     } else {
-      console.log(users[0].getMessages((ms) => console.log(ms)))
+      // console.log(users[0].getMessages((ms) => console.log(ms)))
     }
   })
 })
@@ -70,18 +76,22 @@ app.get('/x.png', (req, res) => {
   res.sendFile(__dirname + '/x.png')
 })
 
-app.get('/messages', (req, res) => {
-  Message.findAll().then(messages => res.send(messages))
+app.get('/users', (req, res) => {
+  User.findAll({
+    include: [Message],
+    order: [ [Message, 'createdAt', 'DESC' ]]
+  }).then(users => {
+    res.send(users)
+  })
 })
 
-app.get('/users', (req, res) => {
-  User.findAll().then(users => {
-    users.forEach((user) => {
-      user.getMessages().then(messages => {
-        messages.forEach((msg) => {
-          console.log(`${user.dataValues.handle}: ${msg.dataValues.text}`)
-          console.log('****************\n\n')
-        })
+app.get('/users/:handle', (req, res) => {
+  User.findAll({ where: {handle: req.params.handle }}).then(users => {
+    let user = users[0]
+    user.getMessages().then(messages => {
+      res.send({
+        user,
+        messages
       })
     })
   })
@@ -92,14 +102,41 @@ io.use((socket, next) => {
 })
 
 io.on('connection', (socket) => {
+  User.findAll({
+    where: {
+      handle: socket.request.session.user
+    },
+    include: [Message],
+    order: [[Message, 'createdAt', 'ASC']]
+  }).then(users => {
+    if (users[0]) {
+      socket.emit('messageHistory', users[0].messages)
+      socket.emit('messageCreated', { text: 'Welcome to the website!', sender: 'company' })
+      socket.join(users[0].handle)
+      userRooms.push(users[0].handle)
+    }
+  })
+
   socket.on('customerMessage', (text) => {
-    console.log(socket.request.session.user)
     Message.create({ text, sender: 'customer' }).then(message => {
-      io.emit('messageCreated', message)
       User.findAll({ where: { handle: socket.request.session.user } }).then(users => {
+        io.sockets.in(users[0].handle).emit('messageCreated', message);
         users[0].addMessage(message)
       })
     })
+  })
+
+  socket.on('agentMessage', (agentMessage) => {
+    Message.create({ text: agentMessage.text, sender: 'company' }).then(message => {
+      User.findById(agentMessage.customerID).then(user => {
+        user.addMessage(message)
+        io.sockets.in(user.handle).emit('messageCreated', message);
+      })
+    })
+  })
+
+  socket.on('joinRooms', () => {
+    userRooms.forEach(room => socket.join(room))
   })
 })
 

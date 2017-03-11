@@ -38,7 +38,7 @@ function formatTime(date) {
 
 function populateChat(conversation) {
   var messagesNode = document.getElementById('messages');
-  JSON.parse(conversation).forEach(function(message, i) {
+  conversation.forEach(function(message, i) {
     var messageNode = document.createElement('p');
     var timeStampNode = document.createElement('div');
 
@@ -78,13 +78,17 @@ function createSocket() {
     messageNode.textContent = message.text;
     timeStampNode.textContent = formatTime(message.createdAt);
 
-    messageNode.className = 'message customer';
-    timeStampNode.className = 'timestamp customerTime';
+    messageNode.className = `message ${message.sender}`;
+    timeStampNode.className = `timestamp ${message.sender}Time`;
 
     messageNode.id = message.id;
     messagesNode.appendChild(messageNode);
     messagesNode.appendChild(timeStampNode);
     messagesNode.scrollTop = messagesNode.scrollHeight;
+  });
+
+  socket.on('messageHistory', function(messages) {
+    populateChat(messages);
   });
 }
 
@@ -106,7 +110,7 @@ function createChatWidget() {;
   var header = document.createElement('div');
   // header.styles.display = 'none';
   header.id = 'header';
-  header.textContent = 'Conversation with Lev';
+  header.textContent = 'Chat with Lev';
   var messages = document.createElement('div');
   // messages.styles.display = 'none';
   messages.id = 'messages';
@@ -150,5 +154,4 @@ document.addEventListener('DOMContentLoaded', function(event) {
   createChatWidget();
   createSocket();
   document.getElementById('input').addEventListener('keyup', submitChat);
-  httpAsync('GET', 'http://127.0.0.1:3000/messages', populateChat);
 });
