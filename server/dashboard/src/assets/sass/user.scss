@@ -2,7 +2,6 @@
   display: inline-block;
   width: calc(100vw - 350px);
   height: calc(100vh - 50px);
-  margin-top: 51px;
   float: right;
   overflow-x: scroll;
 }
@@ -11,6 +10,7 @@
   font-size: 18px;
   text-align: center;
   margin-top: 15px;
+  margin-bottom: 15px;
 }
 
 .messagesWrapper {
@@ -79,10 +79,13 @@
 }
 
 .close {
+  text-align: center;
+  width: 60px;
   padding: 10px;
   display: inline-block;
   background-color: $light-grey;
   border-radius: 4px;
+  border: 1px solid $button-hover;
   transition: all 0.2s ease-in-out;
   &:hover {
     cursor: pointer;
@@ -97,6 +100,7 @@
   display: inline-block;
   padding: 15px 15px 15px 15px;
   max-width: 250px;
+  word-wrap: break-word;
 }
 
 .customer {

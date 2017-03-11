@@ -113,7 +113,7 @@ io.on('connection', (socket) => {
   socket.on('customerMessage', (text) => {
     Message.create({ text, sender: 'customer' }).then(message => {
       User.findAll({ where: { handle: socket.request.session.user } }).then(users => {
-        io.sockets.in(users[0].handle).emit('messageCreated', message);
+        io.sockets.in(users[0].handle).emit('messageCreated', message)
         users[0].addMessage(message)
       })
     })
@@ -123,13 +123,19 @@ io.on('connection', (socket) => {
     Message.create({ text: agentMessage.text, sender: 'company' }).then(message => {
       User.findById(agentMessage.customerID).then(user => {
         user.addMessage(message)
-        io.sockets.in(user.handle).emit('messageCreated', message);
+        io.sockets.in(user.handle).emit('messageCreated', message)
       })
     })
   })
 
   socket.on('joinRooms', () => {
     userRooms.forEach(room => socket.join(room))
+  })
+
+  socket.on('toggleConversation', (data) => {
+    User.findById(data.customerID).then(user => {
+      user.update({ closed: !user.closed })
+    })
   })
 })
 

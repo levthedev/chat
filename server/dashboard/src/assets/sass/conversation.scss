@@ -3,21 +3,6 @@
   display: inline-block;
 }
 
-.navbar {
-  width: 100vw;
-  height: 50px;
-  background-color: $primary-color;
-}
-
-.title {
-  color: $light-grey;
-  font-size: 20px;
-  line-height: 50px;
-  margin-left: 20px;
-  cursor: pointer;
-  text-decoration: none;
-}
-
 .users {
   width: 350px;
   border-right: 1px solid $light-grey;
@@ -30,13 +15,13 @@
   display: none;
 }
 
-.user {
+.singleUser {
   height: 75px;
   border-bottom: 1px solid $light-grey;
   padding: 10px;
 }
 
-.user:hover {
+.singleUser:hover {
   background-color: $light-grey;
   cursor: pointer;
 }

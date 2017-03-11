@@ -1,0 +1,24 @@
+.navbar {
+  width: 100vw;
+  height: 50px;
+  background-color: $primary-color;
+}
+
+.title {
+  color: $light-grey;
+  font-size: 20px;
+  line-height: 50px;
+  margin-left: 20px;
+  text-decoration: none;
+}
+
+.navbarLinks {
+  margin-left: 25px;
+  cursor: pointer;
+}
+
+.navbarLink {
+  color: $light-grey;
+  text-decoration: none;
+  margin-right: 15px;
+}

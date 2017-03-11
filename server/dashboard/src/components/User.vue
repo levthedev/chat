@@ -5,7 +5,7 @@
         <div class='title'>
           Conversation with {{ user.handle }}
         </div>
-        <div v-for='message in messages' class='message'>
+        <div v-for='message in user.messages' class='message'>
           <div :class='`${message.sender}`'>{{ message.text }}</div>
           <div :class='`${message.sender}Time`'>{{ formatTime(message.createdAt) }}</div>
         </div>
@@ -20,7 +20,9 @@
       </div>
       <div class='sidebarTitle'>{{ user.handle }}</div>
       <div class='userActions'>
-        <div class='close'>Close</div>
+        <div @click="toggleConversation()" class='close'>
+          {{ user.closed ? 'Reopen' : 'Close' }}
+        </div>
       </div>
     </div>
   </span>
@@ -29,12 +31,7 @@
 <script>
 export default {
   name: 'user',
-  data() {
-    return {
-      user: {},
-      messages: [],
-    };
-  },
+  props: ['user'],
   methods: {
     formatTime(date) {
       const seconds = Math.floor((new Date() - new Date(date)) / 1000);
@@ -48,25 +45,16 @@ export default {
       this.$socket.emit('agentMessage', { text: this.$refs.input.value, customerID: this.user.id });
       this.$refs.input.value = '';
     },
+    toggleConversation() {
+      this.$socket.emit('toggleConversation', { customerID: this.user.id });
+      this.user.closed = !this.user.closed;
+    },
   },
   beforeMount() {
-    const handle = this.$route.params.handle;
-    this.$http.get(`http://localhost:3000/users/${handle}`).then((response) => {
-      this.user = response.body.user;
-      this.messages = response.body.messages;
-    });
     this.$options.sockets.messageCreated = (message) => {
-      this.messages.push(message);
+      this.user.messages.push(message);
     };
     this.$socket.emit('joinRooms');
-  },
-  beforeRouteUpdate(to, from, next) {
-    const handle = to.params.handle;
-    this.$http.get(`http://localhost:3000/users/${handle}`).then((response) => {
-      this.user = response.body.user;
-      this.messages = response.body.messages;
-      next();
-    });
   },
 };
 </script>

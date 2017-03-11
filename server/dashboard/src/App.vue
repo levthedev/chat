@@ -1,17 +1,16 @@
 <template>
   <div id="app">
-    <Conversations></Conversations>
-    <router-view></router-view>
+    <NavBar></NavBar>
   </div>
 </template>
 
 <script>
-import Conversations from './components/Conversations';
+import NavBar from './components/NavBar';
 
 export default {
   name: 'app',
   components: {
-    Conversations,
+    NavBar,
   },
 };
 </script>
@@ -22,6 +21,5 @@ export default {
     padding: 0;
     font-family: Roboto, sans-serif;
   }
-
   /** { outline: 1px solid red !important }*/
 </style>

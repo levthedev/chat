@@ -1,29 +1,37 @@
 <template>
-  <div class='conversations'>
-    <div class='navbar'><router-link class='title' to='/'>OpenChat</router-link></div>
-    <div class='users'>
-      <div @click='goToUser(user)' v-for='user in users' class='user'>
-        <div class='userHeader'>
-          <div class='letterWrapper' :style="`background-color: ${user.color}`">
-            <span class='letter'>{{ user.handle.slice(0, 1).toUpperCase() }}</span>
+  <div class='wrapper'>
+    <div class='conversations'>
+      <div class='users'>
+        <div @click='goToUser(user)' v-for='user in users' class='singleUser'>
+          <div class='userHeader'>
+            <div class='letterWrapper' :style="`background-color: ${user.color}`">
+              <span class='letter'>{{ user.handle.slice(0, 1).toUpperCase() }}</span>
+            </div>
+            {{ user.handle }}
+            <span class='time'>{{ formatTime(user.createdAt) }}</span>
           </div>
-          {{ user.handle }}
-          <span class='time'>{{ formatTime(user.createdAt) }}</span>
-        </div>
-        <div v-if='user.messages[0]' class='lastMessage'>
-          {{ user.messages[0].text.slice(0, 45) }}...
+          <div v-if='user.messages[0]' class='lastMessage'>
+            {{ user.messages[0].text.slice(0, 30) }}<span v-if='user.messages[0].text.length > 30'>...</span>
+          </div>
         </div>
       </div>
     </div>
+    <User :user='user'></User>
   </div>
 </template>
 
 <script>
+import User from './User';
+
 export default {
   name: 'conversations',
+  props: ['users'],
+  components: {
+    User,
+  },
   data() {
     return {
-      users: [],
+      user: {},
     };
   },
   methods: {
@@ -36,13 +44,9 @@ export default {
       return format(2592000, 'month') || format(604800, 'week') || format(86400, 'day') || format(3600, 'hour') || format(60, 'minute') || 'Just now';
     },
     goToUser(user) {
+      this.user = user;
       this.$router.push(`/users/${user.handle}`);
     },
-  },
-  beforeMount() {
-    this.$http.get('http://localhost:3000/users').then((response) => {
-      this.users = response.body;
-    });
   },
 };
 </script>
