@@ -1,0 +1,81 @@
+.conversations {
+  width: 350px;
+  display: inline-block;
+}
+
+.navbar {
+  width: 100vw;
+  height: 50px;
+  background-color: $primary-color;
+}
+
+.title {
+  color: $light-grey;
+  font-size: 20px;
+  line-height: 50px;
+  margin-left: 20px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.users {
+  width: 350px;
+  border-right: 1px solid $light-grey;
+  height: calc(100vh - 53px);
+  overflow-y: scroll;
+  display: inline-block;
+}
+
+.users::-webkit-scrollbar {
+  display: none;
+}
+
+.user {
+  height: 75px;
+  border-bottom: 1px solid $light-grey;
+  padding: 10px;
+}
+
+.user:hover {
+  background-color: $light-grey;
+  cursor: pointer;
+}
+
+.userHeader {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-left: 10px;
+  position: relative;
+}
+
+.letterWrapper {
+  display: inline-block;
+  height: 35px;
+  width: 35px;
+  border-radius: 3px;
+  text-align: center;
+  margin-right: 25px;
+}
+
+.letter {
+  font-size: 30px;
+  line-height: 35px;
+  color: white;
+}
+
+.time {
+  font-weight: 100;
+  font-size: 14px;
+  color: $dark-grey;
+  position: absolute;
+  right: 5px;
+  top: 10px;
+}
+
+.lastMessage {
+  font-size: 14px;
+  margin-left: 10px;
+  margin-top: 10px;
+  color: $dark-grey;
+}

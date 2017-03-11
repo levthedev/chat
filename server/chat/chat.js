@@ -1,5 +1,3 @@
-var messages = {}
-
 function toggleChat() {
   var state = this.id;
   var open = document.getElementById('open');
@@ -14,17 +12,6 @@ function toggleChat() {
     open.style.display = 'none';
     conversation.style.display = 'none'
   }
-}
-
-function httpAsync(method, url, callback) {
-  var xmlHttp = new XMLHttpRequest();
-  xmlHttp.onreadystatechange = function() {
-    if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
-      callback(xmlHttp.responseText);
-    }
-  }
-  xmlHttp.open(method, url, true);
-  xmlHttp.send(null);
 }
 
 function formatTime(date) {
@@ -45,13 +32,8 @@ function populateChat(conversation) {
     messageNode.textContent = message.text;
     timeStampNode.textContent = formatTime(message.createdAt);
 
-    if (message.sender == 'customer') {
-      messageNode.className = 'message customer';
-      timeStampNode.className = 'timestamp customerTime';
-    } else {
-      messageNode.className = 'message company';
-      timeStampNode.className = 'timestamp companyTime';
-    }
+    messageNode.className = `message ${sender}`;
+    timeStampNode.className = `timestamp ${sender}Time`;
 
     messageNode.id = (message.id);
     messagesNode.appendChild(messageNode);
@@ -102,38 +84,28 @@ function addStyleSheet() {
 
 function createChatWidget() {;
   var container = document.createElement('div');
-  // container.styles.display = 'none';
   container.id = 'container';
   var conversation = document.createElement('div');
-  // conversation.styles.display = 'none';
   conversation.id = 'conversation';
   var header = document.createElement('div');
-  // header.styles.display = 'none';
   header.id = 'header';
   header.textContent = 'Chat with Lev';
   var messages = document.createElement('div');
-  // messages.styles.display = 'none';
   messages.id = 'messages';
   var inputWrapper = document.createElement('div');
-  // inputWrapper.styles.display = 'none';
   inputWrapper.id = 'inputWrapper';
   var input = document.createElement('input');
-  // input.styles.display = 'none';
   input.id = 'input';
   input.placeholder = 'Send a message...';
   var powered = document.createElement('div');
-  // powered.styles.display = 'none';
   powered.id = 'powered';
   var poweredLink = document.createElement('a');
-  // poweredLink.styles.display = 'none';
   poweredLink.href = 'https://github.com/levthedev'
   poweredLink.textContent = 'Powered by OpenChat';
   var closed = document.createElement('div');
-  // closed.styles.display = 'none';
   closed.id = 'closed';
   closed.onclick = toggleChat;
   var open = document.createElement('div');
-  // open.styles.display = 'none';
   open.id = 'open';
   open.onclick = toggleChat;
 
