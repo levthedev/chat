@@ -16,11 +16,15 @@
 .messagesWrapper {
   min-width: 300px;
   width: 40vw;
-  height: calc(100vh - 50px);
+  height: calc(100vh - 50px - 92px);
   display: inline-block;
   border-right: 1px solid $light-grey;
   background-color: $light-grey;
-  margin-left: 1px;
+  overflow-y: scroll;
+}
+
+.messagesWrapper::-webkit-scrollbar {
+  display: none;
 }
 
 .inputWrapper {
@@ -33,10 +37,11 @@
 .input {
   height: 50px;
   font-size: 16px;
-  min-width: 256px;
+  min-width: 259px;
   padding: 20px;
-  width: calc(40vw - 44px);
+  width: calc(40vw - 41px);
   outline: none;
+  border: 1px solid $button-hover;
   color: $dark-grey;
 }
 

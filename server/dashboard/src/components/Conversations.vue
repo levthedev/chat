@@ -11,7 +11,7 @@
           <span class='time'>{{ formatTime(user.createdAt) }}</span>
         </div>
         <div v-if='user.messages[0]' class='lastMessage'>
-          {{ user.messages[0].text }}
+          {{ user.messages[0].text.slice(0, 45) }}...
         </div>
       </div>
     </div>
