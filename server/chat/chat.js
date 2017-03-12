@@ -6,7 +6,9 @@ function toggleChat() {
   if (state === 'closed') {
     closed.style.display = 'none';
     open.style.display = 'block';
-    conversation.style.display = 'block'
+    conversation.style.display = 'block';
+    var messagesNode = document.getElementById('messages');
+    messagesNode.scrollTop = messagesNode.scrollHeight;
   } else if (state === 'open') {
     closed.style.display = 'block';
     open.style.display = 'none';
@@ -32,8 +34,8 @@ function populateChat(conversation) {
     messageNode.textContent = message.text;
     timeStampNode.textContent = formatTime(message.createdAt);
 
-    messageNode.className = `message ${sender}`;
-    timeStampNode.className = `timestamp ${sender}Time`;
+    messageNode.className = `message ${message.sender}`;
+    timeStampNode.className = `timestamp ${message.sender}Time`;
 
     messageNode.id = (message.id);
     messagesNode.appendChild(messageNode);

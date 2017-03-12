@@ -78,6 +78,12 @@ app.get('/users', (req, res) => {
   })
 })
 
+app.get('/messages', (req, res) => {
+  Message.findAll().then(messages => {
+    res.send(messages)
+  })
+})
+
 app.get('/users/:handle', (req, res) => {
   User.findAll({ where: {handle: req.params.handle }}).then(users => {
     let user = users[0]
@@ -113,8 +119,15 @@ io.on('connection', (socket) => {
   socket.on('customerMessage', (text) => {
     Message.create({ text, sender: 'customer' }).then(message => {
       User.findAll({ where: { handle: socket.request.session.user } }).then(users => {
-        io.sockets.in(users[0].handle).emit('messageCreated', message)
-        users[0].addMessage(message)
+        users[0].addMessage(message).then(() => {
+          message.save() // TODO - userID still not beind set on message so dashboard doesn't know to live update
+          message.reload()
+          console.log(message.toJSON())
+          users[0].hasMessage(message).then(function(result) {
+            console.log('RESULT', result)
+          })
+          io.sockets.in(users[0].handle).emit('messageCreated', message)
+        })
       })
     })
   })
@@ -122,8 +135,15 @@ io.on('connection', (socket) => {
   socket.on('agentMessage', (agentMessage) => {
     Message.create({ text: agentMessage.text, sender: 'company' }).then(message => {
       User.findById(agentMessage.customerID).then(user => {
-        user.addMessage(message)
-        io.sockets.in(user.handle).emit('messageCreated', message)
+        user.addMessage(message).then(() => {
+          message.save()
+          message.reload()
+          console.log('************************', message.toJSON)
+          user.hasMessage(message).then(function(result) {
+            console.log('RESULT', result)
+          })
+          io.sockets.in(user.handle).emit('messageCreated', message)
+        })
       })
     })
   })

@@ -16,7 +16,7 @@
         </div>
       </div>
     </div>
-    <User :user='user'></User>
+    <User :user='user' v-if='user'></User>
   </div>
 </template>
 
@@ -47,6 +47,21 @@ export default {
       this.user = user;
       this.$router.push(`/users/${user.handle}`);
     },
+  },
+  beforeMount() {
+    this.$options.sockets.messageCreated = (message) => {
+      // TODO fix this as it means new customers first messages don't appear instantly
+      console.log(this.users, message); //eslint-disable-line
+      const user = this.users.filter(u => u.id === message.userId);
+      console.log(user); //eslint-disable-line
+      if (user.messages) {
+        user.messages.push(message);
+      }
+      // if (this.user.messages && this.user.id === message.userId) {
+      //   this.user.messages.push(message);
+      // }
+    };
+    this.$socket.emit('joinRooms');
   },
 };
 </script>

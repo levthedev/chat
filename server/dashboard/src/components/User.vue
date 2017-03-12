@@ -50,12 +50,6 @@ export default {
       this.user.closed = !this.user.closed;
     },
   },
-  beforeMount() {
-    this.$options.sockets.messageCreated = (message) => {
-      this.user.messages.push(message);
-    };
-    this.$socket.emit('joinRooms');
-  },
 };
 </script>
 
