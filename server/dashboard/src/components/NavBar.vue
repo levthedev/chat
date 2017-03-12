@@ -3,9 +3,15 @@
     <div class="navbar">
       <router-link class='title' to='/'>OpenChat</router-link>
       <span class='navbarLinks'>
-        <span @click='filter("all")' class='navbarLink'>All</span>
-        <span @click='filter("open")' class='navbarLink'>Open</span>
-        <span @click='filter("closed")' class='navbarLink'>Closed</span>
+        <span @click='filter("all")' class='navbarLink'>
+          All
+        </span>
+        <span @click='filter("open")' class='navbarLink'>
+          Open
+        </span>
+        <span @click='filter("closed")' class='navbarLink'>
+          Closed
+        </span>
       </span>
     </div>
     <Conversations :users='users'></Conversations>
@@ -24,11 +30,11 @@
       return {
         allUsers: [],
         users: [],
-        user: {},
       };
     },
     methods: {
       filter(type) {
+        this.$router.push('/');
         if (type === 'open') {
           this.users = this.allUsers.filter(u => !u.closed);
         } else if (type === 'closed') {

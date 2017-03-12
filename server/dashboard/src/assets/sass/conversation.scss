@@ -64,3 +64,17 @@
   margin-top: 15px;
   color: $dark-grey;
 }
+
+.noUsers {
+  color: $dark-grey;
+  text-align: center;
+  margin-top: 25px;
+  .message {
+    margin-top: 25px;
+  }
+
+  img {
+    height: 50px;
+    width: auto;
+  }
+}
