@@ -4,7 +4,15 @@
       <div class='users'>
         <div class="noUsers" v-if='users.length === 0'>
           <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAMAAABHPGVmAAABiVBMVEUAAABebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1Pxua7AAAAgnRSTlMAAQIDBAUGBwgKDA4PERITFBUXGBkaHB4fIiMmJyorLC0uLzAxMjM1Njg5PT9DRUlLTE5PUFFSVFVWV1hbXF5fY2ZoaWtsb3Bxc3d5e3x+f4CFhomLjo+RlKCjpairr7K0tbm6vsDDxcjKzs/R1dfa3N7g4uTm6Onr7e/x8/X3+fv9z9Cc+QAAAqdJREFUGBntwel3E1UAxuHfJE1ToGhAq+JSvHWtK1ZEC+JSd0VFwQ2tC6Ag1gWwpcWWJu9fLqeHgy90kjuZmXuOH/I8jIyMlJLNLq6rjN7SWzsoZtevKq93gCJ2rKqSIxTwrSqaJGq3qjpG1DFV1W0RMdZVZS8SMafqLhNxSTXYz0D7VYefGOhH1aLDAHeqHscZ4FOZxUeHMS/Ta9FXqytzL0P5TeYQfR2SucBwnpFZzugj+1vmaYbT2JCZoY8ZmfUGQ3pb5gx9nJZZYFg75faQa4/cToZ2SuZzcn0m8w3Du1+mN06O8Z7MPkr4Q+YwOeZlfqeM52RWMrbJVmSepYzmNZnH2eYxmWtNSvlA5me2OSvzHuVMyt3FbfbK7aKkRZmT3OaEzHeU9aBcm1u05R6gtL9kjnKLV2X+pLwDMqsZJrsi8zzljXVlnsQ8IbM5RgUfyZzD/CLzIVXcITfFTVNyu6nkB5mvuOlLme+pZlpughsm5B6iossyr3PDazKXqOqgzFrGlmxNZo6qWj2Zp9gyK9NtUdlxmfNsOS/zCdV15O7huim5DjU4I/M1130sc5o6PCI3BtmGzAx1yFZkZmFKZjmjFodlvoCXZF6hHm2Zq3BCZpyanJQZ55z+s9TJkREx2dnuqMxelhVxhMEmeorYR1cR600Gel8x0yhqnkHaPcUEFPVPkwHeVVRAcS/TX7urqIDirjbo6x3FBVTAQfoZ7youoALWGvSxoAICKmKOfK1NFRBQEasNcr2pIgIq5AXytDZVRECFXGmQ4w0VElAxS2dzbKqQgNILKL2A0gsovYDSCyi9gNILKL2A0gsovYDSCyi9gNILKL2A0gsovYDSCyi9gNILKL2Huajk7mNBqa01aF5QYtNAc+Gi0tk4dTcjIyP/F/8CKv8EnuWhuowAAAAASUVORK5CYII=">
-          <div class="message">There are no users yet.</div>
+          <div v-if="!filter" class="message">
+            There are no users yet.
+          </div>
+          <div v-if="filter==='open'" class="message">
+            There are no open chats.
+          </div>
+          <div v-if="filter==='closed'" class="message">
+            There are no closed chats.
+          </div>
         </div>
         <div @click='goToUser(user)' v-for='user in users' class='singleUser'>
           <div class='userHeader'>
@@ -30,7 +38,7 @@ import User from './User';
 
 export default {
   name: 'conversations',
-  props: ['users'],
+  props: ['users', 'filter'],
   components: {
     User,
   },

@@ -17,7 +17,8 @@ const User = sequelize.define('user', {
   handle: { type: Sequelize.STRING },
   color: { type: Sequelize.STRING },
   closed: { type: Sequelize.BOOLEAN },
-  sessions: { type: Sequelize.INTEGER }
+  sessions: { type: Sequelize.INTEGER },
+  online: { type: Sequelize.BOOLEAN }
 })
 
 let userRooms = []
@@ -59,7 +60,7 @@ app.get('/chat.js', (req, res) => {
       user.increment(['sessions'], { by: 1 })
     } else {
       const color = `hsl(${Math.floor(Math.random() * 360)}, 100%, 80%)`
-      User.create({ handle: req.session.user, color, closed: false, sessions: 1 })
+      User.create({ handle: req.session.user, color, closed: false, sessions: 0 })
     }
   })
 })
@@ -77,7 +78,11 @@ app.get('/users', (req, res) => {
     include: [{ model: Message, required: true }],
     order: [['createdAt', 'DESC'], [Message, 'createdAt', 'ASC']]
   }).then(users => {
-    res.send(users)
+    let activeUsers = users.filter(user => user.messages.some(msg => msg.sender === 'customer'))
+    res.send(activeUsers)
+    // I could get all messages ordered by createdAt, include users.
+    // then I'd need to either switch it from {msg: userId, msg: userId} to {user: [msgs]},
+    // or I'd need to make the client take in messages and populate them to the correct user based on their userId
   })
 })
 
@@ -86,28 +91,43 @@ io.use((socket, next) => {
 })
 
 io.on('connection', (socket) => {
-  User.findOne({
-    where: {
-      handle: socket.request.session.user
-    },
-    include: [Message],
-    order: [[Message, 'createdAt', 'ASC']]
-  }).then(user => {
-    if (user) {
-      socket.emit('messageCreated', { text: 'Welcome to the website!', sender: 'company' }) // TODO - only activate if first session
-      socket.emit('messageHistory', user.messages)
-      socket.join(user.handle)
-      userRooms.push(user.handle)
-    }
-  })
+  const handle = socket.request.session.user
+  let currentUser = false
+
+  if (!currentUser) {
+    User.findOne({
+      where: {
+        handle
+      },
+      include: [Message],
+      order: [[Message, 'createdAt', 'ASC']]
+    }).then(user => {
+      if (user) {
+        currentUser = user
+        currentUser.update({ online: true })
+        socket.join(currentUser.handle, () => {
+          userRooms.push(currentUser.handle)
+          if (currentUser.sessions == 0) {
+            Message.create({ text: 'Welcome to OpenChat! Please let us know if you have any questions.', sender: 'company' }).then(message => {
+              currentUser.addMessage(message).then(() => {
+                message.reload().then(() => {
+                  io.sockets.in(currentUser.handle).emit('messageCreated', message)
+                })
+              })
+            })
+            currentUser.increment(['sessions'], { by: 1 })
+          }
+        })
+        socket.emit('messageHistory', user.messages)
+      }
+    })
+  }
 
   socket.on('customerMessage', (text) => {
     Message.create({ text, sender: 'customer' }).then(message => {
-      User.findOne({ where: { handle: socket.request.session.user } }).then(user => {
-        user.addMessage(message).then(() => {
-          message.reload().then(() => {
-            io.sockets.in(user.handle).emit('messageCreated', message)
-          })
+      currentUser.addMessage(message).then(() => {
+        message.reload().then(() => {
+          io.sockets.in(currentUser.handle).emit('messageCreated', message)
         })
       })
     })
@@ -133,6 +153,12 @@ io.on('connection', (socket) => {
     User.findById(data.customerID).then(user => {
       user.update({ closed: !user.closed })
     })
+  })
+
+  socket.on('disconnecting', (reason) => {
+    if (currentUser) {
+      currentUser.update({ online: false })
+    }
   })
 })
 

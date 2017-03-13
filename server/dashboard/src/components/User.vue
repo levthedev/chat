@@ -3,7 +3,8 @@
     <div class='messagesWrapper'>
       <div class='messages'>
         <div class='title'>
-          Conversation with {{ user.handle }}
+          <!-- Chat with {{ user.handle }} - {{ user.online ? 'Online' : 'Offline' }} -->
+          Chat with {{ user.handle }}
         </div>
         <div v-for='message in user.messages' class='message'>
           <div :class='`${message.sender}`'>{{ message.text }}</div>
@@ -52,7 +53,7 @@
             <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAMAAAC7IEhfAAAAyVBMVEUAAABebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1ebH1MQE09AAAAQnRSTlMAAQUGCQsMEBIUHh8gISIuMTQ1O0BES01QUVZXW2RmaG97g4WPkpWaoK+wsrS3ubq+wcPFz9HT19ng4uTr7/H5+/0zNhJVAAAA80lEQVQ4y+2Qy1LCQBBFG1QQFQSJCqOIPIJIBEYMOCpKuP//USbT5llWyEI2wlnM7bpzaippoh8qT45jlSnk+GGJ994hJahAcxYUJ1x8HSVEC7BtYBQUU0DJD6CTEFdYEC2wCoo1XolygJUQAUkkgXjhnuPQOagLIXxR+PjimxBXRf67T/5sFiOw6LE+9cRHbBQx8UQng+hQOOOZaBYTXyKXURGtFuLci+6vYhrbEiUvvik48yjxUEZBp/yXoqpqzAHnJW55aKOhU+33+Ldi5j2qc03f5DRww8MdrnWqXd7jPMMabU80MoiGfrk2lOkML1zrGx57tvPgb4saAAAAAElFTkSuQmCC">
             <span class='analyticsLabel'>LAST SEEN</span>
           </span>
-          <span class="right">{{ formatTime(user.updatedAt) }}</span>
+          <span class="right">{{ user.online ? 'Just now' : formatTime(user.updatedAt) }}</span>
         </div>
       </div>
     </div>

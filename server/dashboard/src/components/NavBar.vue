@@ -3,18 +3,18 @@
     <div class="navbar">
       <router-link class='title' to='/'>OpenChat</router-link>
       <span class='navbarLinks'>
-        <span @click='filter("all")' class='navbarLink'>
-          All
+        <span @click='filter("all")' :class='{"active": (activeFilter === false), "navbarLink": true}'>
+          All Chats
         </span>
-        <span @click='filter("open")' class='navbarLink'>
+        <span @click='filter("open")' :class='{"active": (activeFilter === "open"), "navbarLink": true}'>
           Open
         </span>
-        <span @click='filter("closed")' class='navbarLink'>
+        <span @click='filter("closed")' :class='{"active": (activeFilter === "closed"), "navbarLink": true}'>
           Closed
         </span>
       </span>
     </div>
-    <Conversations :users='users'></Conversations>
+    <Conversations :users='users' :filter='activeFilter'></Conversations>
   </div>
 </template>
 
@@ -30,6 +30,7 @@
       return {
         allUsers: [],
         users: [],
+        activeFilter: false,
       };
     },
     methods: {
@@ -37,10 +38,13 @@
         this.$router.push('/');
         if (type === 'open') {
           this.users = this.allUsers.filter(u => !u.closed);
+          this.activeFilter = 'open';
         } else if (type === 'closed') {
           this.users = this.allUsers.filter(u => u.closed);
+          this.activeFilter = 'closed';
         } else {
           this.users = this.allUsers;
+          this.activeFilter = false;
         }
       },
     },
