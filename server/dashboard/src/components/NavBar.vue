@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
     <div class="navbar">
-      <router-link class='title' to='/'>OpenChat</router-link>
+      <router-link class='title' to='/'>HumbleChat</router-link>
       <span class='navbarLinks'>
         <span @click='filter("all")' :class='{"active": (activeFilter === false), "navbarLink": true}'>
           All Chats

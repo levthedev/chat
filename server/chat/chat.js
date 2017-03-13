@@ -103,7 +103,7 @@ function createChatWidget() {;
   powered.id = 'powered';
   var poweredLink = document.createElement('a');
   poweredLink.href = 'https://github.com/levthedev'
-  poweredLink.textContent = 'Powered by OpenChat';
+  poweredLink.textContent = 'Powered by HumbleChat';
   var closed = document.createElement('div');
   closed.id = 'closed';
   closed.onclick = toggleChat;

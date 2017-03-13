@@ -18,7 +18,8 @@ const User = sequelize.define('user', {
   color: { type: Sequelize.STRING },
   closed: { type: Sequelize.BOOLEAN },
   sessions: { type: Sequelize.INTEGER },
-  online: { type: Sequelize.BOOLEAN }
+  online: { type: Sequelize.BOOLEAN },
+  lastMessageDate: { type: Sequelize.DATE }
 })
 
 let userRooms = []
@@ -76,13 +77,10 @@ app.get('/x.png', (req, res) => {
 app.get('/users', (req, res) => {
   User.findAll({
     include: [{ model: Message, required: true }],
-    order: [['createdAt', 'DESC'], [Message, 'createdAt', 'ASC']]
+    order: [['lastMessageDate', 'DESC'], [Message, 'createdAt', 'ASC']]
   }).then(users => {
     let activeUsers = users.filter(user => user.messages.some(msg => msg.sender === 'customer'))
     res.send(activeUsers)
-    // I could get all messages ordered by createdAt, include users.
-    // then I'd need to either switch it from {msg: userId, msg: userId} to {user: [msgs]},
-    // or I'd need to make the client take in messages and populate them to the correct user based on their userId
   })
 })
 
@@ -108,7 +106,7 @@ io.on('connection', (socket) => {
         socket.join(currentUser.handle, () => {
           userRooms.push(currentUser.handle)
           if (currentUser.sessions == 0) {
-            Message.create({ text: 'Welcome to OpenChat! Please let us know if you have any questions.', sender: 'company' }).then(message => {
+            Message.create({ text: 'Welcome to HumbleChat! Please let us know if you have any questions.', sender: 'company' }).then(message => {
               currentUser.addMessage(message).then(() => {
                 message.reload().then(() => {
                   io.sockets.in(currentUser.handle).emit('messageCreated', message)
@@ -126,6 +124,7 @@ io.on('connection', (socket) => {
   socket.on('customerMessage', (text) => {
     Message.create({ text, sender: 'customer' }).then(message => {
       currentUser.addMessage(message).then(() => {
+        currentUser.update({ lastMessageDate: message.createdAt })
         message.reload().then(() => {
           io.sockets.in(currentUser.handle).emit('messageCreated', message)
         })
@@ -137,6 +136,7 @@ io.on('connection', (socket) => {
     Message.create({ text: agentMessage.text, sender: 'company' }).then(message => {
       User.findById(agentMessage.customerID).then(user => {
         user.addMessage(message).then(() => {
+          user.update({ lastMessageDate: message.createdAt })
           message.reload().then(() => {
             io.sockets.in(user.handle).emit('messageCreated', message)
           })
