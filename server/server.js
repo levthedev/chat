@@ -4,7 +4,7 @@ const session = require('express-session')
 const http = require('http').Server(app)
 const io = require('socket.io')(http)
 
-const sequelize = new Sequelize('sqlite://database.db/')
+const sequelize = new Sequelize('sqlite://database.db/', { logging: false })
 
 const Message = sequelize.define('message', {
   text: { type: Sequelize.STRING },
@@ -25,8 +25,8 @@ const User = sequelize.define('user', {
 let userRooms = []
 
 User.hasMany(Message)
-Message.sync()
-User.sync()
+Message.sync({force: true})
+User.sync({force: true})
 
 sessionMiddleware = session({
   secret: 'keyboard cat',
@@ -48,7 +48,7 @@ app.use((req, res, next) => {
 })
 
 const adjectives = ['slow', 'fast', 'small', 'big', 'young', 'baby', 'happy', 'excited', 'sleepy', 'drowsy', 'clever', 'energetic', 'brave', 'little', 'quiet', 'jolly', 'eager', 'calm', 'curious', 'bouncy', 'graceful', 'rare', 'lucky']
-const animals = ['cat', 'dog', 'fish', 'whale', 'dolphin', 'penguin', 'sloth', 'mouse', 'elephant', 'otter', 'panda', 'bear', 'seal', 'giraffe', 'chameleon', 'duck', 'deer', 'hippo', 'hedgehog', 'octopus', 'owl', 'rabbit', 'fox']
+const animals = ['cat', 'dog', 'fish', 'whale', 'dolphin', 'penguin', 'sloth', 'mouse', 'elephant', 'otter', 'panda', 'bear', 'seal', 'giraffe', 'gecko', 'duck', 'deer', 'hippo', 'hedgehog', 'octopus', 'owl', 'rabbit', 'fox']
 
 app.get('/chat.js', (req, res) => {
   res.sendFile(__dirname + '/chat/chat.js')
@@ -61,7 +61,7 @@ app.get('/chat.js', (req, res) => {
       user.increment(['sessions'], { by: 1 })
     } else {
       const color = `hsl(${Math.floor(Math.random() * 360)}, 100%, 80%)`
-      User.create({ handle: req.session.user, color, closed: false, sessions: 0 })
+      User.create({ handle: req.session.user, color, closed: false, sessions: 1 })
     }
   })
 })
@@ -101,11 +101,13 @@ io.on('connection', (socket) => {
       order: [[Message, 'createdAt', 'ASC']]
     }).then(user => {
       if (user) {
+        console.log(user.handle)
         currentUser = user
         currentUser.update({ online: true })
         socket.join(currentUser.handle, () => {
           userRooms.push(currentUser.handle)
-          if (currentUser.sessions == 0) {
+          if (currentUser.sessions == 1) {
+            currentUser.increment(['sessions'], { by: 1 })
             Message.create({ text: 'Welcome to HumbleChat! Please let us know if you have any questions.', sender: 'company' }).then(message => {
               currentUser.addMessage(message).then(() => {
                 message.reload().then(() => {
@@ -113,7 +115,6 @@ io.on('connection', (socket) => {
                 })
               })
             })
-            currentUser.increment(['sessions'], { by: 1 })
           }
         })
         socket.emit('messageHistory', user.messages)
@@ -153,6 +154,16 @@ io.on('connection', (socket) => {
     User.findById(data.customerID).then(user => {
       user.update({ closed: !user.closed })
     })
+  })
+
+  socket.on('agentTyping', (data) => {
+    User.findById(data.customerID).then(user => {
+      io.sockets.in(user.handle).emit('agentTyping', data.typing)
+    })
+  })
+
+  socket.on('userTyping', (typing) => {
+    io.sockets.in(currentUser.handle).emit('userTyping', { typing, userId: currentUser.id })
   })
 
   socket.on('disconnecting', (reason) => {

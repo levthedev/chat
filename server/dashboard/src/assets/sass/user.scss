@@ -16,7 +16,7 @@
 .messagesWrapper {
   min-width: 300px;
   width: 40vw;
-  height: calc(100vh - 50px - 92px);
+  height: calc(100vh - 50px - 115px);
   display: inline-block;
   border-right: 1px solid $light-grey;
   background-color: $light-grey;
@@ -32,9 +32,15 @@
   bottom: 0px;
   min-width: 300px;
   width: 40vw;
+
+  height: 119px;
+  background-color: $light-grey;
 }
 
 .input {
+  position: absolute;
+  bottom: 0px;
+
   height: 50px;
   font-size: 16px;
   min-width: 259px;
@@ -141,26 +147,11 @@
     margin-left: 25px;
   }
 
-  .sessions {
-
-  }
-
-  .firstSeen {
-
-  }
-
-  .lastSeen {
-
-  }
-
   img {
     height: 20px;
     width: auto;
     position: absolute;
     top: 3px;
-  }
-
-  .right {
   }
 }
 
@@ -175,7 +166,7 @@
   word-wrap: break-word;
 }
 
-.customer {
+.company {
   float: right;
   margin-right: 20px;
   color: $light-grey;
@@ -183,7 +174,7 @@
   border: 1px solid $primary-color;
 }
 
-.company {
+.customer {
   float: left;
   margin-left: 20px;
   color: $dark-grey;
@@ -198,14 +189,85 @@
   font-size: 12px;
   font-weight: 200;
   color: $dark-grey;
+  position: relative;
 }
 
-.customerTime {
+.companyTime {
   float: right;
   margin-right: 25px;
 }
 
-.companyTime {
+.customerTime {
   float: left;
   margin-left: 25px;
 }
+
+.checkOne, .checkTwo {
+  position: absolute;
+  top: -1px;
+}
+
+.checkOne {
+  left: -25px;
+}
+.checkTwo {
+  left: -20px;
+}
+
+#typingIndicator {
+  width: 35px;
+  height: 15px;
+  background-color: $light-grey;
+  position: absolute;
+  bottom: 85px;
+  left: 21px;
+  border: 1px solid $button-hover;
+  margin: 0 auto;
+  border-radius: 5px;
+  padding: 2px;
+  clear: both;
+  display: inline-block;
+  margin-bottom: 10px;
+  float: right;
+  margin-right: 25px;
+}
+
+#dotOne, #dotTwo, #dotThree {
+  position: absolute;
+  height: 5px;
+  width: 5px;
+  border-radius: 5px;
+  background-color: $dark-grey;
+  -webkit-animation: 0.6s linear 0s infinite alternate blink;
+  -moz-animation: 0.6s linear 0s infinite alternate blink;
+  -o-animation: 0.6s linear 0s infinite alternate blink;
+  animation: 0.6s linear 0s infinite alternate blink;
+}
+
+#typingIndicator #dotOne {
+  left: 6px;
+  top: 6px;
+}
+
+#typingIndicator #dotTwo {
+  left: 16px;
+  top: 6px;
+  -webkit-animation-delay: 0.2s;
+  -moz-animation-delay: 0.2s;
+  -o-animation-delay: 0.2s;
+  animation-delay: 0.2s;
+}
+
+#typingIndicator #dotThree {
+  left: 26px;
+  top: 6px;
+  -webkit-animation-delay: 0.4s;
+  -moz-animation-delay: 0.4s;
+  -o-animation-delay: 0.4s;
+  animation-delay: 0.4s;
+}
+
+@-webkit-keyframes blink { from { background-color: $dark-grey; } to { background-color: $light-grey; } }
+@-moz-keyframes blink { from { background-color: $dark-grey; } to { background-color: $light-grey; } }
+@-o-keyframes blink { from { background-color: $dark-grey; } to { background-color: $light-grey; } }
+@keyframes blink { from { background-color: $dark-grey; } to { background-color: $light-grey; } }

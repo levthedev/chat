@@ -1,18 +1,29 @@
 <template>
   <span class='user' v-if='user.id'>
-    <div class='messagesWrapper'>
+    <div ref='messagesWrapper' class='messagesWrapper'>
       <div class='messages'>
         <div class='title'>
-          <!-- Chat with {{ user.handle }} - {{ user.online ? 'Online' : 'Offline' }} -->
           Chat with {{ user.handle }}
         </div>
         <div v-for='message in user.messages' class='message'>
           <div :class='`${message.sender}`'>{{ message.text }}</div>
-          <div :class='`${message.sender}Time`'>{{ formatTime(message.createdAt) }}</div>
+          <div :class='`${message.sender}Time`'>
+            <span v-if="message.sender === 'company'">
+              Delivered {{ formatTime(message.createdAt).toLowerCase() }}
+            </span>
+            <span v-else>
+              {{ formatTime(message.createdAt) }}
+            </span>
+          </div>
         </div>
       </div>
       <div class='inputWrapper'>
-        <input ref='input' @keyup.enter='sendMessage()' placeholder='Reply...' class='input'></input>
+        <span v-show='userTyping' id='typingIndicator'>
+          <span id='dotOne'></span>
+          <span id='dotTwo'></span>
+          <span id='dotThree'></span>
+        </span>
+        <input ref='input' @keyup='startTyping()' @blur='stopTyping()' @keyup.enter='sendMessage()' placeholder='Reply...' class='input'></input>
       </div>
     </div>
     <div class='sidebar'>
@@ -64,6 +75,12 @@
 export default {
   name: 'user',
   props: ['user'],
+  data() {
+    return {
+      userTyping: false,
+      agentTyping: false,
+    };
+  },
   methods: {
     formatTime(date) {
       const seconds = Math.floor((new Date() - new Date(date)) / 1000);
@@ -76,11 +93,40 @@ export default {
     sendMessage() {
       this.$socket.emit('agentMessage', { text: this.$refs.input.value, customerID: this.user.id });
       this.$refs.input.value = '';
+      this.scrollToBottom();
     },
     toggleConversation() {
       this.$socket.emit('toggleConversation', { customerID: this.user.id });
       this.user.closed = !this.user.closed;
     },
+    startTyping() {
+      if (!this.agentTyping) {
+        this.$socket.emit('agentTyping', { typing: true, customerID: this.user.id });
+        this.agentTyping = true;
+      }
+    },
+    stopTyping() {
+      if (this.agentTyping) {
+        this.$socket.emit('agentTyping', { typing: false, customerID: this.user.id });
+        this.agentTyping = false;
+      }
+    },
+    scrollToBottom() {
+      const messagesWrapper = this.$refs.messagesWrapper;
+      if (messagesWrapper) {
+        messagesWrapper.scrollTop = messagesWrapper.scrollHeight;
+      }
+    },
+  },
+  beforeMount() {
+    this.$options.sockets.userTyping = (data) => {
+      if (this.user.id === data.userId) {
+        this.userTyping = data.typing;
+      }
+    };
+  },
+  updated() {
+    this.scrollToBottom();
   },
 };
 </script>

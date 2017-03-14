@@ -10,14 +10,14 @@ function toggleChat() {
     closed.classList.toggle('fadeIconIn');
     open.classList.toggle('fadeIconIn');
     conversation.classList.toggle('fadeIn');
-    var messagesNode = document.getElementById('messages');
-    messagesNode.scrollTop = messagesNode.scrollHeight;
   } else if (state === 'open') {
     closed.classList.toggle('fadeIconOut');
     open.classList.toggle('fadeIconOut');
     closed.classList.toggle('fadeIconIn');
     open.classList.toggle('fadeIconIn');
     conversation.classList.toggle('fadeIn');
+    var messagesNode = document.getElementById('messages');
+    messagesNode.scrollTop = messagesNode.scrollHeight;
   }
 }
 
@@ -60,9 +60,12 @@ function createSocket() {
   socket = io('http://localhost:3000/');
 
   socket.on('messageCreated', function(message) {
+    stopTyping();
     var messagesNode = document.getElementById('messages');
     var messageNode = document.createElement('p');
     var timeStampNode = document.createElement('div');
+    var messagesNode = document.getElementById('messages');
+    var typing = document.getElementById('typingIndicator');
 
     messageNode.textContent = message.text;
     timeStampNode.textContent = formatTime(message.createdAt);
@@ -70,6 +73,7 @@ function createSocket() {
     messageNode.className = `message ${message.sender}`;
     timeStampNode.className = `timestamp ${message.sender}Time`;
 
+    if (typing) typing.parentElement.removeChild(typing);
     messageNode.id = message.id;
     messagesNode.appendChild(messageNode);
     messagesNode.appendChild(timeStampNode);
@@ -79,6 +83,32 @@ function createSocket() {
   socket.on('messageHistory', function(messages) {
     populateChat(messages);
   });
+
+  socket.on('agentTyping', function(data) {
+    var messagesNode = document.getElementById('messages');
+    var typingNode = document.getElementById('typingIndicator');
+    var input = document.getElementById('input');
+    var inputWrapper = document.getElementById('inputWrapper');
+
+    if (data && !typingNode) {
+      var typing = document.createElement('div');
+      typing.id = 'typingIndicator';
+      var dotOne = document.createElement('span');
+      dotOne.id='dotOne';
+      var dotTwo = document.createElement('span');
+      dotTwo.id='dotTwo';
+      var dotThree = document.createElement('span');
+      dotThree.id='dotThree';
+
+      inputWrapper.insertBefore(typing, input);
+      typing.appendChild(dotOne);
+      typing.appendChild(dotTwo);
+      typing.appendChild(dotThree);
+      messagesNode.scrollTop = messagesNode.scrollHeight;
+    } else if (!data && typingNode) {
+      typingNode.parentElement.removeChild(typingNode);
+    }
+  });
 }
 
 function addStyleSheet() {
@@ -87,6 +117,20 @@ function addStyleSheet() {
   link.type = 'text/css';
   link.rel = 'stylesheet';
   document.body.appendChild(link);
+}
+
+function startTyping() {
+  if (!typing) {
+    typing = true;
+    socket.emit('userTyping', true)
+  }
+}
+
+function stopTyping() {
+  if (typing) {
+    typing = false;
+    socket.emit('userTyping', false)
+  }
 }
 
 function createChatWidget() {;
@@ -106,6 +150,10 @@ function createChatWidget() {;
   var input = document.createElement('input');
   input.id = 'input';
   input.placeholder = 'Send a message...';
+  input.onkeyup = startTyping;
+  input.onfocus = startTyping;
+  input.onblur = stopTyping;
+  typing = false;
   var powered = document.createElement('div');
   powered.id = 'powered';
   var poweredLink = document.createElement('a');
