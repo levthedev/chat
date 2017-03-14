@@ -3,6 +3,13 @@ body {
   padding: 0;
 }
 
+.preload * {
+  -webkit-transition: none !important;
+  -moz-transition: none !important;
+  -ms-transition: none !important;
+  -o-transition: none !important;
+}
+
 #scrolly {
   height: 200vh;
   width: 95vw;
@@ -17,18 +24,40 @@ body {
   width: 60px;
   height: 60px;
   background-color: mediumpurple;
-  background-size: 32px auto;
   background-repeat: no-repeat;
+  background-size: 32px auto;
   background-position: center 16px;
 }
 
+.fadeIconOut {
+  transform: rotate(90deg);
+  opacity: 0 !important;
+  background-size: 0px auto !important;
+  background-position: center 32px !important;
+}
+
+.fadeIconIn {
+  transform: rotate(0deg);
+  opacity: 1 !important;
+  background-size: 32px auto !important;
+  background-position: center 16px !important;
+}
+
 #open {
-  display: none;
+  -webkit-transition: transform .25s ease-out, background-position .25s ease-out, background-size .25s ease-out, opacity 0s ease;
+  -moz-transition: transform .25s ease-out, background-position .25s ease-out, background-size .25s ease-out, opacity 0s ease;
+  -ms-transition: transform .25s ease-out, background-position .25s ease-out, background-size .25s ease-out, opacity 0s ease;
+  -o-transition: transform .25s ease-out, background-position .25s ease-out, background-size .25s ease-out, opacity 0s ease;
+  transition: transform .25s ease-out, background-position .25s ease-out, background-size .25s ease-out, opacity 0s ease;
   background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAn1BMVEUAAAD///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////8Kd3m4AAAANHRSTlMAAQIEBQkLDA0REhMUFhgaHB8hIyYnMTRVWWdpa2xzgoWRlZqgqrfF0+Di5uvv8fX3+fv9i0OV1AAAANdJREFUOI190VcSgzAMRVFBeu+990JIfftfWyAQRxIm/pPPHYaRicIzOu2rJE5u680dMy0B3JvcC+fgaucwl8XHTRE5L2KPiymgCuPAhsgFVMEcKJIDVQhHnmgoC+mL8JMTUXh8WkU/JQqLpxbGUwrm1kK4pVCeKBJOxacI2trlfoBb47/rIumysDkv7P4r0vxb5IWvZ6KoB8FBuCM35rmUUa52WiY6KheF7xKVfOWseHXCseIrN8WrG43Vq/K4+HpQXIL35U40Bh6935jtt/Tz1gY5fWU/b2OHeDs8LMM+AAAAAElFTkSuQmCC');
 }
 
 #closed {
-  display: block;
+  -webkit-transition: transform .25s ease-out, background-position .25s ease-out, background-size .25s ease-out, ease-out, opacity 0s ease;
+  -moz-transition: transform .25s ease-out, background-position .25s ease-out, background-size .25s ease-out, ease-out, opacity 0s ease;
+  -ms-transition: transform .25s ease-out, background-position .25s ease-out, background-size .25s ease-out, ease-out, opacity 0s ease;
+  -o-transition: transform .25s ease-out, background-position .25s ease-out, background-size .25s ease-out, ease-out, opacity 0s ease;
+  transition: transform .25s ease-out, background-position .25s ease-out, background-size .25s ease-out, ease-out, opacity 0s ease;
   background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAllBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////AJcWoAAAAMXRSTlMAAQIDBAUHCA4TFBgnKSwwNE1RVFdbXGN0dXl/i5Kam56lubzKz9rg4ubo6e/x8/n7YLulYgAAAHtJREFUOMvtyrcagkAUROEjYhazYgJzwsS8/8tZ2O7e7f08zRTzA9Fw/5Sj26YHQPMsb3kF4ouM1jCTWZujDca8bTDH/rX8g58CpQ0WnGwwIbVBh9rd+nOgdfX/uwigOjq8XG+x7eOssZIkTfHXLQKAOAsAGDwCgHry3Q9NQqBF5l52hQAAAABJRU5ErkJggg==');
 }
 
@@ -57,8 +86,7 @@ body {
   position: fixed;
   bottom: 100px;
   right: 25px;
-  display: none;
-  height: 70vh;
+  height: 69vh;
   min-height: 200px;
   max-height: 700px;
   width: 380px;
@@ -66,6 +94,16 @@ body {
   background-color: #F8F8F8;
   overflow-x: hidden;
   border: 1px solid mediumpurple;
+  -webkit-transition: all .15s ease-in;
+  -moz-transition: all .15s ease-in;
+  -ms-transition: all .15s ease-in;
+  -o-transition: all .15s ease-in;
+  transition: all .15s ease-in;
+}
+
+#container .fadeIn {
+  opacity: 1!important;
+  height: 70vh!important;
 }
 
 #messages {
@@ -156,6 +194,10 @@ body {
   text-align: center;
   font-size: 12px;
   color: mediumpurple;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 #powered a, #powered a:visited, #powered a:active {

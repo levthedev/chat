@@ -1,18 +1,23 @@
 function toggleChat() {
+  document.getElementById('container').classList.remove('preload');
   var state = this.id;
   var open = document.getElementById('open');
   var closed = document.getElementById('closed');
   var conversation = document.getElementById('conversation')
   if (state === 'closed') {
-    closed.style.display = 'none';
-    open.style.display = 'block';
-    conversation.style.display = 'block';
+    closed.classList.toggle('fadeIconOut');
+    open.classList.toggle('fadeIconOut');
+    closed.classList.toggle('fadeIconIn');
+    open.classList.toggle('fadeIconIn');
+    conversation.classList.toggle('fadeIn');
     var messagesNode = document.getElementById('messages');
     messagesNode.scrollTop = messagesNode.scrollHeight;
   } else if (state === 'open') {
-    closed.style.display = 'block';
-    open.style.display = 'none';
-    conversation.style.display = 'none'
+    closed.classList.toggle('fadeIconOut');
+    open.classList.toggle('fadeIconOut');
+    closed.classList.toggle('fadeIconIn');
+    open.classList.toggle('fadeIconIn');
+    conversation.classList.toggle('fadeIn');
   }
 }
 
@@ -87,8 +92,10 @@ function addStyleSheet() {
 function createChatWidget() {;
   var container = document.createElement('div');
   container.id = 'container';
+  container.className = 'preload';
   var conversation = document.createElement('div');
   conversation.id = 'conversation';
+  conversation.style.opacity = 0;
   var header = document.createElement('div');
   header.id = 'header';
   header.textContent = 'Chat with Lev';
@@ -107,9 +114,11 @@ function createChatWidget() {;
   var closed = document.createElement('div');
   closed.id = 'closed';
   closed.onclick = toggleChat;
+  closed.className = 'fadeIconIn';
   var open = document.createElement('div');
   open.id = 'open';
   open.onclick = toggleChat;
+  open.className = 'fadeIconOut';
 
   document.body.appendChild(container)
   container.appendChild(conversation)
