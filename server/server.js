@@ -35,7 +35,8 @@ sessionMiddleware = session({
   cookie: {
     secure: false,
     maxAge: 12 * 30 * 24 * 60 * 60 * 1000,
-    domain: 'localhost'
+    // domain: 'localhost'
+    domain: '174.138.71.184'
   }
 })
 

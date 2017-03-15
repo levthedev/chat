@@ -6,7 +6,8 @@ import User from '@/components/User';
 
 Vue.use(Router);
 Vue.use(VueResource);
-Vue.use(VueSocketio, 'http://localhost:3000');
+// Vue.use(VueSocketio, 'http://localhost:3000');
+Vue.use(VueSocketio, 'http://174.138.71.184/');
 
 export default new Router({
   routes: [
