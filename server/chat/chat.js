@@ -114,7 +114,8 @@ function createSocket() {
 
 function addStyleSheet() {
   var link = document.createElement('link');
-  link.href = 'http://127.0.0.1:3000/styles.css';
+  // link.href = 'http://127.0.0.1:3000/styles.css';
+  link.href = 'http://174.138.71.184:3000/styles.css';
   link.type = 'text/css';
   link.rel = 'stylesheet';
   document.body.appendChild(link);
