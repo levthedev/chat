@@ -48,9 +48,9 @@ function populateChat(conversation) {
   })
 }
 
-function submitChat(e) {
-  if (e.keyCode === 13) {
-    var input = document.getElementById('input');
+function sendMessage(e) {
+  var input = document.getElementById('input');
+  if (e.keyCode === 13 && input.value !== '') {
     socket.emit('customerMessage', input.value)
     input.value = '';
   }
@@ -184,5 +184,5 @@ document.addEventListener('DOMContentLoaded', function(event) {
   addStyleSheet();
   createChatWidget();
   createSocket();
-  document.getElementById('input').addEventListener('keyup', submitChat);
+  document.getElementById('input').addEventListener('keyup', sendMessage);
 });

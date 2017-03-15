@@ -19,7 +19,6 @@ export default {
   body {
     margin: 0;
     padding: 0;
-    font-family: Roboto, sans-serif;
+    font-family: sans-serif, Roboto, Helvetica, 'system';
   }
-  /** { outline: 1px solid red !important }*/
 </style>

@@ -13,7 +13,10 @@
 }
 
 .navbarLinks {
-  margin-left: 25px;
+  // margin-left: 25px;
+  position: absolute;
+  right: 25px;
+  top: 15px;
   cursor: pointer;
 }
 
@@ -22,10 +25,4 @@
   text-decoration: none;
   margin-right: 15px;
   padding: 5px;
-}
-
-.active {
-  border-radius: 4px;
-  background-color: $light-grey;
-  color: $primary-color;
 }

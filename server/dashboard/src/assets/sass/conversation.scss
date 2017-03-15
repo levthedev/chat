@@ -15,9 +15,60 @@
   display: none;
 }
 
+.filters {
+  width: 250px;
+  margin-left: 50px;
+  text-align: center;
+  font-size: 18px;
+  color: $primary-color;
+  border-bottom: 1px solid $light-grey;
+  height: 75px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.filter {
+  height: 23px;
+  cursor: pointer;
+  padding: 5px;
+  border: 2px solid $primary-color;
+  border-radius: 5px;
+}
+
+.toggles {
+  width: 350px;
+  height: 50px;
+  display: flex;
+}
+
+.toggle {
+  color: $dark-grey;
+  background-color: $light-grey;
+  border: 1px solid $button-hover;
+  width: 175px;
+  text-align: center;
+  line-height: 50px;
+  font-size: 20px;
+  cursor: pointer;
+  &:hover {
+    background-color: $button-hover;
+  }
+}
+
+.activeToggle {
+  background-color: $button-hover;
+}
+
+.active {
+  background-color: $primary-color;
+  color: white;
+}
+
 .singleUser {
   height: 75px;
   border-bottom: 1px solid $light-grey;
+  border-top: 1px solid $light-grey;
   padding: 10px;
 }
 

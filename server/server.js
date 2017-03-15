@@ -101,7 +101,6 @@ io.on('connection', (socket) => {
       order: [[Message, 'createdAt', 'ASC']]
     }).then(user => {
       if (user) {
-        console.log(user.handle)
         currentUser = user
         currentUser.update({ online: true })
         socket.join(currentUser.handle, () => {

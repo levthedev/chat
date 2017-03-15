@@ -10,11 +10,6 @@ body {
   -o-transition: none !important;
 }
 
-#scrolly {
-  height: 200vh;
-  width: 95vw;
-}
-
 #closed, #open {
   position: fixed;
   bottom: 25px;
@@ -61,6 +56,11 @@ body {
   background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAllBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////AJcWoAAAAMXRSTlMAAQIDBAUHCA4TFBgnKSwwNE1RVFdbXGN0dXl/i5Kam56lubzKz9rg4ubo6e/x8/n7YLulYgAAAHtJREFUOMvtyrcagkAUROEjYhazYgJzwsS8/8tZ2O7e7f08zRTzA9Fw/5Sj26YHQPMsb3kF4ouM1jCTWZujDca8bTDH/rX8g58CpQ0WnGwwIbVBh9rd+nOgdfX/uwigOjq8XG+x7eOssZIkTfHXLQKAOAsAGDwCgHry3Q9NQqBF5l52hQAAAABJRU5ErkJggg==');
 }
 
+#conversation, #input, #header {
+  font-family: sans-serif, Roboto, Helvetica;
+  font-weight: 400;
+}
+
 #header {
   height: 75px;
   width: 380px;
@@ -74,10 +74,6 @@ body {
   font-weight: 300;
   margin-bottom: 15px;
   position: fixed;
-}
-
-#conversation, #input, #header {
-  font-family: 'Helvetica Neue', 'Roboto', 'Helvetica', 'Arial', 'sans-serif';
   font-weight: 300;
 }
 

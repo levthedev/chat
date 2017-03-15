@@ -3,18 +3,12 @@
     <div class="navbar">
       <router-link class='title' to='/'>HumbleChat</router-link>
       <span class='navbarLinks'>
-        <span @click='filter("all")' :class='{"active": (activeFilter === false), "navbarLink": true}'>
-          All Chats
-        </span>
-        <span @click='filter("open")' :class='{"active": (activeFilter === "open"), "navbarLink": true}'>
-          Open
-        </span>
-        <span @click='filter("closed")' :class='{"active": (activeFilter === "closed"), "navbarLink": true}'>
-          Closed
-        </span>
+          <router-link class='navbarLink' to='/'>Chats</router-link>
+          <router-link class='navbarLink' to='/triggers'>Triggers</router-link>
+          <router-link class='navbarLink' to='/analytics'>Analytics</router-link>
       </span>
     </div>
-    <Conversations :users='users' :filter='activeFilter'></Conversations>
+    <Conversations :allUsers='users'></Conversations>
   </div>
 </template>
 
@@ -28,29 +22,11 @@
     },
     data() {
       return {
-        allUsers: [],
         users: [],
-        activeFilter: false,
       };
-    },
-    methods: {
-      filter(type) {
-        this.$router.push('/');
-        if (type === 'open') {
-          this.users = this.allUsers.filter(u => !u.closed);
-          this.activeFilter = 'open';
-        } else if (type === 'closed') {
-          this.users = this.allUsers.filter(u => u.closed);
-          this.activeFilter = 'closed';
-        } else {
-          this.users = this.allUsers;
-          this.activeFilter = false;
-        }
-      },
     },
     beforeMount() {
       this.$http.get('http://localhost:3000/users').then((response) => {
-        this.allUsers = response.body;
         this.users = response.body;
       });
     },

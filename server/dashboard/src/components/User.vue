@@ -91,9 +91,11 @@ export default {
       return format(2592000, 'month') || format(604800, 'week') || format(86400, 'day') || format(3600, 'hour') || format(60, 'minute') || 'Just now';
     },
     sendMessage() {
-      this.$socket.emit('agentMessage', { text: this.$refs.input.value, customerID: this.user.id });
-      this.$refs.input.value = '';
-      this.scrollToBottom();
+      if (this.$refs.input.value !== '') {
+        this.$socket.emit('agentMessage', { text: this.$refs.input.value, customerID: this.user.id });
+        this.$refs.input.value = '';
+        this.scrollToBottom();
+      }
     },
     toggleConversation() {
       this.$socket.emit('toggleConversation', { customerID: this.user.id });
