@@ -4,7 +4,7 @@ const session = require('express-session')
 const http = require('http').Server(app)
 const io = require('socket.io')(http)
 
-const sequelize = new Sequelize('sqlite://database.db/', { logging: false })
+const sequelize = new Sequelize('sqlite://database.db/', { logging: true })
 
 const Message = sequelize.define('message', {
   text: { type: Sequelize.STRING },
@@ -51,6 +51,7 @@ const adjectives = ['slow', 'fast', 'small', 'big', 'young', 'baby', 'happy', 'e
 const animals = ['cat', 'dog', 'fish', 'whale', 'dolphin', 'penguin', 'sloth', 'mouse', 'elephant', 'otter', 'panda', 'bear', 'seal', 'giraffe', 'gecko', 'duck', 'deer', 'hippo', 'hedgehog', 'octopus', 'owl', 'rabbit', 'fox']
 
 app.get('/chat.js', (req, res) => {
+  console.log('requesting chat')
   res.sendFile(__dirname + '/chat/chat.js')
   const number = Math.floor(Math.random() * 1000)
   sample = (array) => array[Math.floor(Math.random() * array.length)]
@@ -67,14 +68,17 @@ app.get('/chat.js', (req, res) => {
 })
 
 app.get('/styles.css', (req, res) => {
+  console.log('requesting styles')
   res.sendFile(__dirname + '/chat/styles.css')
 })
 
 app.get('/x.png', (req, res) => {
+  console.log('requesting x')
   res.sendFile(__dirname + '/chat/x.png')
 })
 
 app.get('/users', (req, res) => {
+  console.log('requesting users')
   User.findAll({
     include: [{ model: Message, required: true }],
     order: [['lastMessageDate', 'DESC'], [Message, 'createdAt', 'ASC']]
@@ -89,6 +93,7 @@ io.use((socket, next) => {
 })
 
 io.on('connection', (socket) => {
+  console.log('socket connection')
   const handle = socket.request.session.user
   let currentUser = false
 
@@ -172,4 +177,4 @@ io.on('connection', (socket) => {
   })
 })
 
-http.listen(3000, '127.0.0.1')
+http.listen(80, '127.0.0.1')
