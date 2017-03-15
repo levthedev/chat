@@ -58,8 +58,7 @@ function sendMessage(e) {
 
 function createSocket() {
   // socket = io('http://localhost:3000/');
-  // socket = io('http://174.138.71.184:3000/');
-  socket = io("//server.opka.io:2095")
+  socket = io('http://174.138.71.184:3000/');
 
   socket.on('messageCreated', function(message) {
     stopTyping();
