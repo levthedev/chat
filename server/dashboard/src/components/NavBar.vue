@@ -27,7 +27,7 @@
     },
     beforeMount() {
       // this.$http.get('http://localhost:3000/users').then((response) => {
-      this.$http.get('http://174.138.71.184/users').then((response) => {
+      this.$http.get('http://174.138.71.184:3000/users').then((response) => {
         this.users = response.body;
       });
     },
