@@ -28,6 +28,9 @@ User.hasMany(Message)
 Message.sync({force: true})
 User.sync({force: true})
 
+const production = process.env.NODE_ENV === 'production'
+const domain = production ? '174.138.71.184' : 'localhost'
+
 sessionMiddleware = session({
   secret: 'keyboard cat',
   resave: false,
@@ -35,8 +38,9 @@ sessionMiddleware = session({
   cookie: {
     secure: false,
     maxAge: 12 * 30 * 24 * 60 * 60 * 1000,
+    domain
     // domain: 'localhost'
-    domain: '174.138.71.184'
+    // domain: '174.138.71.184'
   }
 })
 

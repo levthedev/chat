@@ -1,3 +1,9 @@
+var baseHref = 'http://174.138.71.184'
+if (window.location.href === 'http://localhost:8000/test.html') {
+  baseHref = 'http://localhost'
+}
+baseHref += ':3000'
+
 function toggleChat() {
   document.getElementById('container').classList.remove('preload');
   var state = this.id;
@@ -57,8 +63,7 @@ function sendMessage(e) {
 }
 
 function createSocket() {
-  // socket = io('http://localhost:3000/');
-  socket = io('http://174.138.71.184:3000/');
+  socket = io(baseHref);
 
   socket.on('messageCreated', function(message) {
     stopTyping();
@@ -114,8 +119,7 @@ function createSocket() {
 
 function addStyleSheet() {
   var link = document.createElement('link');
-  // link.href = 'http://127.0.0.1:3000/styles.css';
-  link.href = 'http://174.138.71.184:3000/styles.css';
+  link.href = baseHref + '/styles.css';
   link.type = 'text/css';
   link.rel = 'stylesheet';
   document.body.appendChild(link);

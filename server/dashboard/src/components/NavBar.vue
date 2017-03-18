@@ -26,8 +26,10 @@
       };
     },
     beforeMount() {
-      // this.$http.get('http://localhost:3000/users').then((response) => {
-      this.$http.get('http://174.138.71.184:3000/users').then((response) => {
+      const production = process.env.NODE_ENV === 'production';
+      const domain = production ? '174.138.71.184' : 'localhost';
+
+      this.$http.get(`http://${domain}:3000/users`).then((response) => {
         this.users = response.body;
       });
     },
