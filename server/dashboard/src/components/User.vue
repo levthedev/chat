@@ -2,28 +2,20 @@
   <span class='user' v-if='user.id'>
     <div ref='messagesWrapper' class='messagesWrapper'>
       <div class='messages'>
-        <div class='title'>
-          Chat with {{ user.handle }}
-        </div>
-        <div v-for='message in user.messages' class='message'>
-          <div :class='`${message.sender}`'>{{ message.text }}</div>
-          <div :class='`${message.sender}Time`'>
-            <span v-if="message.sender === 'company'">
-              Delivered {{ formatTime(message.createdAt).toLowerCase() }}
-            </span>
-            <span v-else>
-              {{ formatTime(message.createdAt) }}
-            </span>
+        <div class='title'>Chat with {{ user.handle }}</div>
+        <div v-for='msg in user.messages' class='message'>
+          <div :class='`${msg.sender}`'>{{ msg.text }}</div>
+          <div :class='`${msg.sender}Time`'>
+            <span v-if="msg.sender === 'company'">Delivered {{ formatTime(msg.createdAt).toLowerCase() }}</span>
+            <span v-else>{{ formatTime(msg.createdAt) }}</span>
           </div>
         </div>
       </div>
       <div class='inputWrapper'>
         <span v-show='userTyping' id='typingIndicator'>
-          <span id='dotOne'></span>
-          <span id='dotTwo'></span>
-          <span id='dotThree'></span>
+          <span id='dotOne'></span><span id='dotTwo'></span><span id='dotThree'></span>
         </span>
-        <input ref='input' @keyup='startTyping()' @blur='stopTyping()' @keyup.enter='sendMessage()' placeholder='Reply...' class='input'></input>
+        <input ref='input' @keyup='toggleTyping(true)' @blur='toggleTyping(false)' @keyup.enter='sendMessage()' placeholder='Reply...' class='input'/>
       </div>
     </div>
     <div class='sidebar'>
@@ -101,16 +93,10 @@ export default {
       this.$socket.emit('toggleConversation', { customerID: this.user.id });
       this.user.closed = !this.user.closed;
     },
-    startTyping() {
-      if (!this.agentTyping) {
-        this.$socket.emit('agentTyping', { typing: true, customerID: this.user.id });
-        this.agentTyping = true;
-      }
-    },
-    stopTyping() {
-      if (this.agentTyping) {
-        this.$socket.emit('agentTyping', { typing: false, customerID: this.user.id });
-        this.agentTyping = false;
+    toggleTyping(typing) {
+      if ((!typing && this.agentTyping) || (typing && !this.agentTyping)) {
+        this.$socket.emit('agentTyping', { typing: !this.agentTyping, customerID: this.user.id });
+        this.agentTyping = !this.agentTyping;
       }
     },
     scrollToBottom() {

@@ -4,7 +4,7 @@ const session = require('express-session')
 const http = require('http').Server(app)
 const io = require('socket.io')(http)
 
-const sequelize = new Sequelize('sqlite://database.db/', { logging: true })
+const sequelize = new Sequelize('sqlite://database.db/', { logging: false })
 
 const Message = sequelize.define('message', {
   text: { type: Sequelize.STRING },
@@ -25,8 +25,8 @@ const User = sequelize.define('user', {
 let userRooms = []
 
 User.hasMany(Message)
-Message.sync({force: true})
-User.sync({force: true})
+Message.sync()
+User.sync()
 
 const production = process.env.NODE_ENV === 'production'
 const domain = production ? '174.138.71.184' : 'localhost'
@@ -39,8 +39,6 @@ sessionMiddleware = session({
     secure: false,
     maxAge: 12 * 30 * 24 * 60 * 60 * 1000,
     domain
-    // domain: 'localhost'
-    // domain: '174.138.71.184'
   }
 })
 
@@ -56,7 +54,6 @@ const adjectives = ['slow', 'fast', 'small', 'big', 'young', 'baby', 'happy', 'e
 const animals = ['cat', 'dog', 'fish', 'whale', 'dolphin', 'penguin', 'sloth', 'mouse', 'elephant', 'otter', 'panda', 'bear', 'seal', 'giraffe', 'gecko', 'duck', 'deer', 'hippo', 'hedgehog', 'octopus', 'owl', 'rabbit', 'fox']
 
 app.get('/chat.js', (req, res) => {
-  console.log('requesting chat')
   res.sendFile(__dirname + '/chat/chat.js')
   const number = Math.floor(Math.random() * 1000)
   sample = (array) => array[Math.floor(Math.random() * array.length)]
@@ -73,23 +70,29 @@ app.get('/chat.js', (req, res) => {
 })
 
 app.get('/styles.css', (req, res) => {
-  console.log('requesting styles')
   res.sendFile(__dirname + '/chat/styles.css')
 })
 
 app.get('/x.png', (req, res) => {
-  console.log('requesting x')
   res.sendFile(__dirname + '/chat/x.png')
 })
 
 app.get('/users', (req, res) => {
-  console.log('requesting users')
   User.findAll({
     include: [{ model: Message, required: true }],
     order: [['lastMessageDate', 'DESC'], [Message, 'createdAt', 'ASC']]
   }).then(users => {
     let activeUsers = users.filter(user => user.messages.some(msg => msg.sender === 'customer'))
     res.send(activeUsers)
+  })
+})
+
+app.get('/allUsersLength', (req, res) => {
+  User.findAll({
+    include: [{ model: Message, required: true }],
+    order: [['lastMessageDate', 'DESC'], [Message, 'createdAt', 'ASC']]
+  }).then(users => {
+    res.send(users.length)
   })
 })
 

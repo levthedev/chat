@@ -8,31 +8,12 @@
           <router-link class='navbarLink' to='/analytics'>Analytics</router-link>
       </span>
     </div>
-    <Conversations :allUsers='users'></Conversations>
   </div>
 </template>
 
 <script>
-  import Conversations from './Conversations';
-
   export default {
     name: 'navbar',
-    components: {
-      Conversations,
-    },
-    data() {
-      return {
-        users: [],
-      };
-    },
-    beforeMount() {
-      const production = process.env.NODE_ENV === 'production';
-      const domain = production ? '174.138.71.184' : 'localhost';
-
-      this.$http.get(`http://${domain}:3000/users`).then((response) => {
-        this.users = response.body;
-      });
-    },
   };
 </script>
 
