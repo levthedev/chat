@@ -4,6 +4,7 @@ import VueResource from 'vue-resource';
 import VueSocketio from 'vue-socket.io';
 import Conversations from '@/components/Conversations';
 import Analytics from '@/components/Analytics';
+import Chart from '@/components/Chart';
 
 Vue.use(Router);
 Vue.use(VueResource);
@@ -22,6 +23,12 @@ export default new Router({
       path: '/analytics',
       name: 'Analytics',
       component: Analytics,
+    },
+    {
+      path: '/chart',
+      name: 'Chart',
+      component: Chart,
+      props: { chartData: [1, 3, 2, 5, 2, 4, 3], days: 7 },
     },
   ],
 });

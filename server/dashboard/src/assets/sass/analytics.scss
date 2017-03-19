@@ -1,9 +1,103 @@
+.wrapper {
+  background-color: $light-grey;
+  min-height: 100vh;
+}
+
+.analyticsHeader {
+  text-align: center;
+  margin: 0 auto;
+  width: 400px;
+  padding-top: 25px;
+  font-size: 24px;
+  color: $dark-grey;
+}
+
+.filter {
+  height: 35px;
+  margin-top: 15px;
+  line-height: 35px;
+  text-align: center;
+  font-size: 18px;
+  display: flex;
+  justify-content: center;
+  border: 1px solid $button-hover;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  
+  .time {
+    border-right: 1px solid $button-hover;
+    width: 150px;
+    cursor: pointer;
+    background-color: white;
+    &:hover {
+      background-color: $button-hover;
+    }
+    &:last-child {
+      border-right: 0px;
+    }
+  }
+  .active {
+    background-color: $button-hover;
+  }
+}
+
 .analytics {
-  border: 1px solid $primary-color;
+  width: 80vw;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-content: space-between;
 }
 
 .insight {
-  width: 250px;
-  height: 250px;
-  border: 1px solid $primary-color;
+  width: 300px;
+  height: 175px;
+  border-radius: 5px;
+  color: $dark-grey;
+  display: flex;
+  flex-wrap: wrap;
+  flex-grow: 1;
+  flex-shrink: 1;
+  margin: 20px;
+  justify-content: center;
+  align-content: center;
+  background-color: white;
+  border: 1px solid $button-hover;
+  position: relative;
+
+  .chart {
+    position: absolute;
+    bottom: -10px;
+  }
+
+  .number {
+    font-size: 50px;
+    width: 80%;
+    height: 50px;
+    margin-bottom: 25px;
+  }
+
+  .statWrapper {
+    width: 80%;
+    height: 50px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .stat {
+    font-size: 20px;
+  }
+
+  .statDescription {
+    font-size: 14px;
+  }
+
+  .stat, .statDescription, .number {
+    z-index: 10;
+  }
 }
