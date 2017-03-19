@@ -11,27 +11,21 @@
     name: 'Chart',
     props: ['chartData', 'days', 'id'],
     methods: {
-      xLabels() {
-        const padding = Math.round(this.days / 7);
-        const emptyLabels = new Array(this.days + padding);
-        return emptyLabels.fill('');
-      },
       renderChart(data) {
         this.chart = new Chart(
           `chart-${this.id}`, {
             type: 'line',
             data: {
-              labels: this.xLabels(),
-              // labels: [1, 2, 3, 4, 5, 6, 7],
+              labels: new Array((this.days + 1) + Math.round(this.days / 7)).fill(''),
               datasets: [{
-                data,
+                data: [undefined, ...data],
                 fill: false,
                 backgroundColor: 'transparent',
                 pointBorderColor: 'transparent',
                 pointBorderWidth: 'transparent',
-                borderColor: `hsl(${(this.id - 1) * 60}, 100%, 87.5%)`,
+                borderColor: `hsl(${(this.id + 1) * 52}, 100%, 87.5%)`,
                 borderWidth: '7',
-                lineTension: 0,
+                lineTension: 0.1,
                 borderJoinStyle: 'round',
                 borderCapStyle: 'round',
                 radius: 0,
@@ -43,7 +37,7 @@
                 yAxes: [{
                   display: false,
                   ticks: {
-                    max: (Math.max(...data) + 1),
+                    max: (Math.max(...data) + (Math.max(...data) / 10)),
                     min: (((Math.min(...data)) - (Math.max(...data))) / 5),
                   },
                 }],
@@ -69,7 +63,7 @@
               });
               const ticks = this.chart.options.scales.yAxes[0].ticks;
               if (ticks) {
-                ticks.max = (Math.max(...newData) + 1);
+                ticks.max = (Math.max(...newData) + (Math.max(...newData) / 10));
                 ticks.min = (((Math.min(...newData)) - (Math.max(...newData))) / 5);
               }
               this.chart.update();
@@ -83,13 +77,3 @@
     },
   };
 </script>
-
-<style scoped>
-  .chart {
-    width: 275px;
-    /*width: 91%;
-    height: 85%;*/
-    height: 150px;
-    opacity: 0.5;
-  }
-</style>

@@ -17,6 +17,7 @@ const User = sequelize.define('user', {
   handle: { type: Sequelize.STRING },
   color: { type: Sequelize.STRING },
   closed: { type: Sequelize.BOOLEAN },
+  closedDate: { type: Sequelize.DATE },
   sessions: { type: Sequelize.INTEGER },
   online: { type: Sequelize.BOOLEAN },
   lastMessageDate: { type: Sequelize.DATE }
@@ -87,12 +88,12 @@ app.get('/users', (req, res) => {
   })
 })
 
-app.get('/allUsersLength', (req, res) => {
+app.get('/allUsers', (req, res) => {
   User.findAll({
     include: [{ model: Message, required: true }],
     order: [['lastMessageDate', 'DESC'], [Message, 'createdAt', 'ASC']]
   }).then(users => {
-    res.send(users.length)
+    res.send({ users })
   })
 })
 
@@ -101,7 +102,6 @@ io.use((socket, next) => {
 })
 
 io.on('connection', (socket) => {
-  console.log('socket connection')
   const handle = socket.request.session.user
   let currentUser = false
 

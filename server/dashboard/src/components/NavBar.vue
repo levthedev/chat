@@ -6,6 +6,7 @@
           <router-link class='navbarLink' to='/'>Chats</router-link>
           <router-link class='navbarLink' to='/triggers'>Triggers</router-link>
           <router-link class='navbarLink' to='/analytics'>Analytics</router-link>
+          <router-link class='navbarLink' to='/settings'>Settings</router-link>
       </span>
     </div>
   </div>
@@ -17,7 +18,7 @@
   };
 </script>
 
-<style lang='scss' scoped>
+<style scoped lang='scss'>
   @import '../assets/sass/variables.scss';
   @import '../assets/sass/navbar.scss';
 </style>

@@ -21,7 +21,7 @@
             <div class='letterWrapper' :style="`background-color: ${user.color}`">
               <span class='letter'>{{ user.handle.slice(0, 1).toUpperCase() }}</span>
             </div>
-            <span v-if='user.online' class='online'></span> {{ user.handle }}
+            <span :class='{ dot: true, online: user.online }'></span> {{ user.handle }}
             <span class='time'>{{ formatTime(user.messages.slice(-1)[0].createdAt) }}</span>
           </div>
           <div v-if='user.messages.slice(-1)[0]' class='lastMessage'>

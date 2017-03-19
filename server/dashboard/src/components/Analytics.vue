@@ -26,23 +26,23 @@
         </span>
       </span>
       <span class="insight">
-        <Chart class="chart" :id="3" :days=days :chartData="randomData()" />
+        <Chart class="chart" :id="3" :days=days :chartData="userReplyRateData()" />
         <span class='number'>{{ Math.round(users.length / allUsers.length * 100) }}%</span>
         <span class='statWrapper'>
-          <span class='stat'>User Reply Rate</span>
+          <span class='stat'>Active User Rate</span>
           <span class='statDescription'>Users who reply to an auto message</span>
         </span>
       </span>
       <span class="insight">
-        <Chart class="chart" :id="4" :days=days :chartData="randomData()" />
-        <span class='number'>{{ agentReplyRate() }}%</span>
+        <!-- <Chart class="chart" :id="4" :days=days :chartData="agentReplyRateData()" /> -->
+        <span class='number'>{{ 0 }}</span>
         <span class='statWrapper'>
-          <span class='stat'>Agent Reply Rate</span>
-          <span class='statDescription'>Percentage of users who get a reply from an agent</span>
+          <span class='stat'>???</span>
+          <span class='statDescription'>???????????????</span>
         </span>
       </span>
       <span class="insight">
-        <Chart class="chart" :id="5" :days=days :chartData="randomData()" />
+        <Chart class="chart" :id="5" :days=days :chartData="closedChats()" />
         <span class='number'>{{ users.filter(u => u.closed).length }}</span>
         <span class='statWrapper'>
           <span class='stat'>Closed Chats</span>
@@ -93,42 +93,40 @@
         });
         return Math.round((repliedUsers.length * 100) / this.users.length);
       },
+      userReplyRateData() {
+        const allUsersByDay = this.groupByDate(this.objectsSinceDate(this.allUsers));
+        const activeUsersByDay = this.groupByDate(this.objectsSinceDate(this.users));
+        return activeUsersByDay.map((count, i) => { //eslint-disable-line
+          if (count === 0 && allUsersByDay[i] === 0) return 100;
+          return (count * 100) / allUsersByDay[i];
+        });
+      },
+      closedChats() {
+        const closedChats = this.users.filter(u => u.closed);
+        return this.groupByDate(this.objectsSinceDate(closedChats));
+      },
       objectsSinceDate(objects) {
-        const today = moment();
-        const minDate = today.subtract(this.days, 'days');
+        const minDate = moment().subtract(this.days, 'days');
         return objects.filter((object) => { // eslint-disable-line
           return moment(object.createdAt).isAfter(minDate);
         });
       },
       groupByDate(collection) {
-        const today = moment();
         const groups = {};
-        groups[today.format('dddd, MMMM Do YYYY')] = 0;
-        const days = new Array(this.days);
 
-        days.fill('foo').map(() => {
-          groups[today.subtract(1, 'days').format('dddd, MMMM Do YYYY')] = 0;
-          return true;
+        new Array(this.days).fill('').forEach((_, i) => {
+          groups[moment().subtract(i, 'days').format('YYYY-MMM-D')] = 0;
         });
 
-        collection.map((object) => {
-          const day = moment(object.createdAt).format('dddd, MMMM Do YYYY');
-          groups[day] += 1;
-          return groups[day];
+        collection.forEach((object) => {
+          groups[moment(object.createdAt).format('YYYY-MMM-D')] += 1;
         });
 
-        const sortedGroups = Object.keys(groups).sort((day, nextDay) => { //eslint-disable-line
-          return day - nextDay;
-        });
-        return sortedGroups.map(sg => groups[sg]).reverse();
-      },
-      randomColor() {
-        return `hsl(${Math.floor(Math.random() * 360)}, 100%, 87.5%)`;
+        return Object.values(groups).reverse();
       },
     },
     beforeMount() {
-      const production = process.env.NODE_ENV === 'production';
-      const domain = production ? '174.138.71.184' : 'localhost';
+      const domain = (process.env.NODE_ENV === 'production') ? '174.138.71.184' : 'localhost';
       this.$http.get(`http://${domain}:3000/users`).then((response) => {
         this.users = response.body;
       });
