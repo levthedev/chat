@@ -9,7 +9,7 @@
       </div>
     </div>
     <div class="analytics">
-      <span class="insight">
+      <span class="insight" @click="log(groupByDate(objectsSinceDate(allUsers)))">
         <Chart class="chart" :id="1" :days=days :chartData="groupByDate(objectsSinceDate(allUsers))" />
         <span class='number'>{{ objectsSinceDate(allUsers).length }}</span>
         <span class='statWrapper'>
@@ -17,7 +17,7 @@
           <span class='statDescription'>Total number of new users</span>
         </span>
       </span>
-      <span class="insight">
+      <span class="insight" @click="log(groupByDate(objectsSinceDate(messages())))">
         <Chart class="chart" :id="2" :days=days :chartData="groupByDate(objectsSinceDate(messages()))" />
         <span class='number'>{{ messages().length }}</span>
         <span class='statWrapper'>
@@ -25,7 +25,7 @@
           <span class='statDescription'>Total number of new messages</span>
         </span>
       </span>
-      <span class="insight">
+      <span class="insight" @click="log(userReplyRateData())">
         <Chart class="chart" :id="3" :days=days :chartData="userReplyRateData()" />
         <span class='number'>{{ Math.round(users.length / allUsers.length * 100) }}%</span>
         <span class='statWrapper'>
@@ -33,7 +33,7 @@
           <span class='statDescription'>Users who reply to an auto message</span>
         </span>
       </span>
-      <span class="insight">
+      <span class="insight" @click="log(closedChats())">
         <!-- <Chart class="chart" :id="4" :days=days :chartData="agentReplyRateData()" /> -->
         <span class='number'>{{ 0 }}</span>
         <span class='statWrapper'>
@@ -41,7 +41,7 @@
           <span class='statDescription'>???????????????</span>
         </span>
       </span>
-      <span class="insight">
+      <span class="insight" @click="log(closedChats())">
         <Chart class="chart" :id="5" :days=days :chartData="closedChats()" />
         <span class='number'>{{ users.filter(u => u.closed).length }}</span>
         <span class='statWrapper'>
@@ -49,7 +49,7 @@
           <span class='statDescription'>Total number of closed chats</span>
         </span>
       </span>
-      <span class="insight">
+      <span class="insight" @click="log(closedChats())">
         <Chart class="chart" :id="6" :days=days :chartData="randomData()" />
         <span class='number'>{{ 0 }}</span>
         <span class='statWrapper'>
@@ -76,6 +76,9 @@
       };
     },
     methods: {
+      log(data) {
+        console.log(data); //eslint-disable-line
+      },
       randomData() {
         const empty = new Array(this.days);
         return empty.fill(1).map(() => Math.floor(Math.random() * 10));
@@ -103,23 +106,26 @@
       },
       closedChats() {
         const closedChats = this.users.filter(u => u.closed);
-        return this.groupByDate(this.objectsSinceDate(closedChats));
+        console.log(this.objectsSinceDate(closedChats, 'closedDate')); //eslint-disable-line
+        return this.groupByDate(this.objectsSinceDate(closedChats, 'closedDate'), 'closedDate');
       },
-      objectsSinceDate(objects) {
+      objectsSinceDate(objects, objectParam) {
         const minDate = moment().subtract(this.days, 'days');
+        const param = (objectParam || 'createdAt');
         return objects.filter((object) => { // eslint-disable-line
-          return moment(object.createdAt).isAfter(minDate);
+          return moment(object[param]).isAfter(minDate);
         });
       },
-      groupByDate(collection) {
+      groupByDate(collection, dateParam) {
         const groups = {};
+        const param = (dateParam || 'createdAt');
 
         new Array(this.days).fill('').forEach((_, i) => {
           groups[moment().subtract(i, 'days').format('YYYY-MMM-D')] = 0;
         });
 
         collection.forEach((object) => {
-          groups[moment(object.createdAt).format('YYYY-MMM-D')] += 1;
+          groups[moment(object[param]).format('YYYY-MMM-D')] += 1;
         });
 
         return Object.values(groups).reverse();

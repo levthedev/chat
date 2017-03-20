@@ -1,5 +1,6 @@
 const app = require('express')()
 const Sequelize = require('sequelize')
+const moment = require('moment')
 const session = require('express-session')
 const http = require('http').Server(app)
 const io = require('socket.io')(http)
@@ -26,8 +27,8 @@ const User = sequelize.define('user', {
 let userRooms = []
 
 User.hasMany(Message)
-Message.sync()
-User.sync()
+Message.sync({force: true})
+User.sync({force: true})
 
 const production = process.env.NODE_ENV === 'production'
 const domain = production ? '174.138.71.184' : 'localhost'
@@ -90,12 +91,66 @@ app.get('/users', (req, res) => {
 
 app.get('/allUsers', (req, res) => {
   User.findAll({
-    include: [{ model: Message, required: true }],
+    include: [{ model: Message }],
     order: [['lastMessageDate', 'DESC'], [Message, 'createdAt', 'ASC']]
   }).then(users => {
     res.send({ users })
   })
 })
+
+app.get('/seed', (req, res) => {
+  const welcomeMessage = Message.create({ text: 'Welcome to HumbleChat! Please let us know if you have any questions.', sender: 'company' }).then(wcMessage => {
+    new Array(240).fill('').forEach(() => {
+      const color = `hsl(${Math.floor(Math.random() * 360)}, 100%, 80%)`
+      const number = Math.floor(Math.random() * 1000)
+      sample = (array) => array[Math.floor(Math.random() * array.length)]
+      const handle = [sample(adjectives), sample(animals), number].join('-')
+      const sessions = Math.floor(Math.random() * 25)
+      User.create({ handle, color, sessions, closed: false, createdAt: randomDate() }, { raw: true }).then((user) => {
+        user.addMessage(wcMessage)
+        if (random() && random() && random()) {
+          const messages = new Array(Math.floor(Math.random() * 15)).fill('')
+          messages.forEach((m) => {
+            Message.create(randomMessage(), { raw: true }).then(message => {
+              user.addMessage(message)
+            })
+          })
+        }
+        const closed = random()
+        const online = random()
+        user.update({
+          closed: closed,
+          online: online,
+          closedDate: (closed && randomDate()),
+          lastMessageDate: randomDate()
+        })
+      })
+    })
+    res.send('hello, world')
+  })
+})
+
+const random = () => [true, false][Math.round(Math.random())]
+
+function randomDate() {
+  const today = new Date
+  const offset = new Date(1000 * 60 * 60 * 24 * Math.floor((Math.random() * 120)))
+  const createdAt = today - offset
+  return moment(createdAt)
+}
+
+function randomMessage() {
+  sample = (array) => array[Math.floor(Math.random() * array.length)]
+  const customerWords = ['Hey,', 'hi,', 'Hi!', 'yooo', 'I have a question.', 'how much does your product cost?', 'are you online?']
+  const agentWords = ['Happy to help!', 'Glad I could be of assistance', 'How can I help you?', 'Great!', 'Hm, good question', 'Yes, definitely!', '$5 a month :)', 'Emoji! 😊', 'Wow!']
+  let sender = 'company'
+  let text = sample(agentWords)
+  if (Math.random() > 0.5) {
+    sender = 'customer'
+    text = sample(customerWords)
+  }
+  return { text, sender, createdAt: randomDate() }
+}
 
 io.use((socket, next) => {
   sessionMiddleware(socket.request, socket.request.res, next)
@@ -164,7 +219,7 @@ io.on('connection', (socket) => {
 
   socket.on('toggleConversation', (data) => {
     User.findById(data.customerID).then(user => {
-      user.update({ closed: !user.closed })
+      user.update({ closed: !user.closed, closedDate: moment()})
     })
   })
 
