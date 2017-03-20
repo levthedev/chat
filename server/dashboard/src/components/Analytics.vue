@@ -9,36 +9,12 @@
       </div>
     </div>
     <div class="analytics">
-      <span class="insight" @click="log(groupByDate(objectsSinceDate(allUsers)))">
-        <Chart class="chart" :id="1" :days=days :chartData="groupByDate(objectsSinceDate(allUsers))" />
-        <span class='number'>{{ objectsSinceDate(allUsers).length }}</span>
+      <span class="insight" @click="log(groupByDate(objectsSinceDate(users)))">
+        <Chart class="chart" :id="1" :days=days :chartData="groupByDate(objectsSinceDate(users))" />
+        <span class='number'>{{ objectsSinceDate(users).length }}</span>
         <span class='statWrapper'>
-          <span class='stat'>New Users</span>
-          <span class='statDescription'>Total number of new users</span>
-        </span>
-      </span>
-      <span class="insight" @click="log(groupByDate(objectsSinceDate(messages())))">
-        <Chart class="chart" :id="2" :days=days :chartData="groupByDate(objectsSinceDate(messages()))" />
-        <span class='number'>{{ messages().length }}</span>
-        <span class='statWrapper'>
-          <span class='stat'>New Messages</span>
-          <span class='statDescription'>Total number of new messages</span>
-        </span>
-      </span>
-      <span class="insight" @click="log(userReplyRateData())">
-        <Chart class="chart" :id="3" :days=days :chartData="userReplyRateData()" />
-        <span class='number'>{{ Math.round(users.length / allUsers.length * 100) }}%</span>
-        <span class='statWrapper'>
-          <span class='stat'>Active User Rate</span>
-          <span class='statDescription'>Users who reply to an auto message</span>
-        </span>
-      </span>
-      <span class="insight" @click="log(closedChats())">
-        <!-- <Chart class="chart" :id="4" :days=days :chartData="agentReplyRateData()" /> -->
-        <span class='number'>{{ 0 }}</span>
-        <span class='statWrapper'>
-          <span class='stat'>???</span>
-          <span class='statDescription'>???????????????</span>
+          <span class='stat'>New Chats</span>
+          <span class='statDescription'>Number of new users who have initiated a chat</span>
         </span>
       </span>
       <span class="insight" @click="log(closedChats())">
@@ -49,12 +25,36 @@
           <span class='statDescription'>Total number of closed chats</span>
         </span>
       </span>
-      <span class="insight" @click="log(closedChats())">
-        <Chart class="chart" :id="6" :days=days :chartData="randomData()" />
-        <span class='number'>{{ 0 }}</span>
+      <span class="insight" @click="log(groupByDate(objectsSinceDate(messages())))">
+        <Chart class="chart" :id="2" :days=days :chartData="groupByDate(objectsSinceDate(messages()))" />
+        <span class='number'>{{ objectsSinceDate(messages()).length }}</span>
+        <span class='statWrapper'>
+          <span class='stat'>New Messages</span>
+          <span class='statDescription'>Number of new messages</span>
+        </span>
+      </span>
+      <span class="insight" @click="log(userReplyRateData())">
+        <Chart class="chart" :id="3" :days=days :chartData="userReplyRateData()" />
+        <span class='number'>{{ Math.round(objectsSinceDate(users).length / objectsSinceDate(allUsers).length * 100) || 0 }}%</span>
+        <span class='statWrapper'>
+          <span class='stat'>Active User Rate</span>
+          <span class='statDescription'>Percentage of users who begin a chat</span>
+        </span>
+      </span>
+      <span class="insight" @click="log(averageResponseTimeByDay())">
+        <Chart class="chart" :id="6" :days=days :chartData="averageResponseTimeByDay()" />
+        <span class='number'>{{ averageResponseTime(allThreads()) }} seconds</span>
         <span class='statWrapper'>
           <span class='stat'>Average Response Time</span>
           <span class='statDescription'>Average Response Time</span>
+        </span>
+      </span>
+      <span class="insight" @click="log(randomData())">
+        <Chart class="chart" :id="4" :days=days :chartData="randomData()" />
+        <span class='number'>{{ 0 }}</span>
+        <span class='statWrapper'>
+          <span class='stat'>???</span>
+          <span class='statDescription'>???????????????</span>
         </span>
       </span>
     </div>
@@ -89,13 +89,6 @@
       path() {
         return window.location.hostname; // eslint-disable-line
       },
-      agentReplyRate() {
-        const repliedUsers = this.users.filter((user) => {
-          const replies = user.messages.filter(msg => msg.sender === 'company');
-          return (replies.length > 1);
-        });
-        return Math.round((repliedUsers.length * 100) / this.users.length);
-      },
       userReplyRateData() {
         const allUsersByDay = this.groupByDate(this.objectsSinceDate(this.allUsers));
         const activeUsersByDay = this.groupByDate(this.objectsSinceDate(this.users));
@@ -106,8 +99,54 @@
       },
       closedChats() {
         const closedChats = this.users.filter(u => u.closed);
-        console.log(this.objectsSinceDate(closedChats, 'closedDate')); //eslint-disable-line
         return this.groupByDate(this.objectsSinceDate(closedChats, 'closedDate'), 'closedDate');
+      },
+      allThreads() {
+        const removeFollowups = (msgs) => { //eslint-disable-line
+          return msgs.filter((m, i) => i !== 0 && m.sender !== msgs[i - 1].sender);
+        };
+
+        return this.objectsSinceDate(this.users).map((user) => { //eslint-disable-line
+          const replies = removeFollowups(user.messages);
+          const userReplies = replies.filter(reply => reply.sender === 'customer');
+          return userReplies.map((reply) => {
+            let end = replies[(replies.indexOf(reply) + 1)];
+            if (!end) end = { createdAt: moment() };
+            return { start: reply.createdAt, end: end.createdAt };
+          });
+        });
+      },
+      averageResponseTime(allThreads, daily) {
+        const replyTimes = allThreads.map((userThreads) => { //eslint-disable-line
+          return userThreads.map((thread) => { //eslint-disable-line
+            return {
+              start: thread.start,
+              end: thread.end,
+              difference: moment(thread.end).diff(moment(thread.start), 'seconds'),
+            };
+          });
+        });
+        const flattenedTimes = [].concat(...replyTimes);
+        if (daily) return flattenedTimes;
+        if (replyTimes.length === 0) return 0;
+        const differences = flattenedTimes.map(x => x.difference);
+        return Math.floor(differences.reduce((a, b) => a + b) / flattenedTimes.length);
+      },
+      averageResponseTimeByDay() {
+        const groups = {};
+        new Array(this.days).fill('').forEach((_, i) => {
+          groups[moment().subtract(i, 'days').format('YYYY-MMM-D')] = [];
+        });
+        console.log(this.averageResponseTime(this.allThreads(), true)); //eslint-disable-line
+        this.averageResponseTime(this.allThreads(), true).forEach((object) => {
+          groups[moment(object.end).format('YYYY-MMM-D')].push(object.difference);
+        });
+        return Object.values(groups).reverse().map((day) => {
+          if (day.length > 0) {
+            return day.reduce((a, b) => a + b) / day.length;
+          }
+          return 0;
+        });
       },
       objectsSinceDate(objects, objectParam) {
         const minDate = moment().subtract(this.days, 'days');
