@@ -23,7 +23,7 @@
                 backgroundColor: 'transparent',
                 pointBorderColor: 'transparent',
                 pointBorderWidth: 'transparent',
-                borderColor: `hsl(${(this.id + 1) * 52}, 100%, 87.5%)`,
+                borderColor: `hsl(${(this.id + 1) * 50}, 100%, 85%)`,
                 borderWidth: '7',
                 lineTension: 0.1,
                 borderJoinStyle: 'round',
@@ -37,8 +37,8 @@
                 yAxes: [{
                   display: false,
                   ticks: {
-                    max: (Math.max(...data) + (Math.max(...data) / 10)),
-                    min: (((Math.min(...data)) - (Math.max(...data))) / 5),
+                    max: ((Math.max(...data) + (Math.max(...data) / 10)) || 5),
+                    min: ((((Math.min(...data)) - (Math.max(...data))) / 5) || -1),
                   },
                 }],
                 xAxes: [{ display: false }],
@@ -63,8 +63,8 @@
               });
               const ticks = this.chart.options.scales.yAxes[0].ticks;
               if (ticks) {
-                ticks.max = (Math.max(...newData) + (Math.max(...newData) / 10));
-                ticks.min = (((Math.min(...newData)) - (Math.max(...newData))) / 5);
+                ticks.max = ((Math.max(...newData) + (Math.max(...newData) / 10)) || 5);
+                ticks.min = ((((Math.min(...newData)) - (Math.max(...newData))) / 5) || -1);
               }
               this.chart.update();
             } else {

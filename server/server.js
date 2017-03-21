@@ -27,8 +27,8 @@ const User = sequelize.define('user', {
 let userRooms = []
 
 User.hasMany(Message)
-Message.sync({force: true})
-User.sync({force: true})
+Message.sync()
+User.sync()
 
 const production = process.env.NODE_ENV === 'production'
 const domain = production ? '174.138.71.184' : 'localhost'
