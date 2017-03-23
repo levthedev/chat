@@ -10,7 +10,7 @@
     </div>
     <div class="analytics">
       <span class="insight" @click="log(groupByDate(objectsSinceDate(users, 'lastMessageDate'), 'lastMessageDate'))">
-        <Chart class="chart" :id="1" :days=days :chartData="groupByDate(objectsSinceDate(users, 'lastMessageDate'), 'lastMessageDate')" />
+        <Chart class="chart" :color="'4d9bd8'" :id="1" :days=days :chartData="groupByDate(objectsSinceDate(users, 'lastMessageDate'), 'lastMessageDate')" />
         <span class='number'>{{ objectsSinceDate(users, 'lastMessageDate').length }}</span>
         <span class='statWrapper'>
           <span class='stat'>All Chats</span>
@@ -18,7 +18,7 @@
         </span>
       </span>
       <span class="insight" @click="log(closedChats())">
-        <Chart class="chart" :id="2" :days=days :chartData="closedChats()" />
+        <Chart class="chart" :color="'956bc3'" :id="2" :days=days :chartData="closedChats()" />
         <span class='number'>{{ users.filter(u => u.closed).length }}</span>
         <span class='statWrapper'>
           <span class='stat'>Closed Chats</span>
@@ -26,23 +26,23 @@
         </span>
       </span>
       <span class="insight" @click="log(groupByDate(objectsSinceDate(messages())))">
-        <Chart class="chart" :id="3" :days=days :chartData="groupByDate(objectsSinceDate(messages()))" />
+        <Chart class="chart" :color="'d95a88'" :id="3" :days=days :chartData="groupByDate(objectsSinceDate(messages()))" />
         <span class='number'>{{ objectsSinceDate(messages()).length }}</span>
         <span class='statWrapper'>
           <span class='stat'>New Messages</span>
           <span class='statDescription'>Number of new messages</span>
         </span>
       </span>
-      <span class="insight" @click="log(randomData())">
+      <!-- <span class="insight" @click="log(randomData())">
         <Chart class="chart" :id="4" :days=days :chartData="randomData()" />
         <span class='number'>{{ 0 }}</span>
         <span class='statWrapper'>
           <span class='stat'>New Sessions</span>
           <span class='statDescription'>Number of new sessions</span>
         </span>
-      </span>
+      </span> -->
       <span class="insight" @click="log(userReplyRateData())">
-        <Chart class="chart" :id="5" :days=days :chartData="userReplyRateData()" />
+        <Chart class="chart" :color="'e6a56e'" :id="5" :days=days :chartData="userReplyRateData()" />
         <span class='number'>{{ Math.round(objectsSinceDate(users).length / objectsSinceDate(allUsers).length * 100) || 0 }}%</span>
         <span class='statWrapper'>
           <span class='stat'>Active User Rate</span>
@@ -50,8 +50,8 @@
         </span>
       </span>
       <span class="insight" @click="log(averageResponseTimeByDay())">
-        <Chart class="chart" :id="6" :days=days :chartData="averageResponseTimeByDay()" />
-        <span class='number'>{{ averageResponseTime() }} minutes</span>
+        <Chart class="chart" :color="'3dc06c'" :id="6" :days=days :chartData="averageResponseTimeByDay()" />
+        <span class='number'>{{ formatTime(averageResponseTime()) }}</span>
         <span class='statWrapper'>
           <span class='stat'>Average Response Time</span>
           <span class='statDescription'>Average Response Time</span>
@@ -76,6 +76,13 @@
       };
     },
     methods: {
+      formatTime(seconds) {
+        const format = (length, word) => {
+          const interval = Math.floor(seconds / length);
+          return interval >= 1 ? `${interval} ${word}${interval > 1 ? 's' : ''}` : false;
+        };
+        return format(2592000, 'month') || format(604800, 'week') || format(86400, 'day') || format(3600, 'hour') || format(60, 'minute');
+      },
       log(data) {
         console.log(data); //eslint-disable-line
       },
@@ -122,7 +129,7 @@
             return {
               start: thread.start,
               end: thread.end,
-              difference: moment(thread.end).diff(moment(thread.start), 'minutes'),
+              difference: moment(thread.end).diff(moment(thread.start), 'seconds'),
             };
           });
         });

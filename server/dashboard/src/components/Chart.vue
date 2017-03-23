@@ -9,21 +9,23 @@
 
   export default {
     name: 'Chart',
-    props: ['chartData', 'days', 'id'],
+    props: ['chartData', 'days', 'id', 'color'],
     methods: {
       renderChart(data) {
+        console.log(this.color);
         this.chart = new Chart(
           `chart-${this.id}`, {
             type: 'line',
             data: {
               labels: new Array((this.days + 1) + Math.round(this.days / 7)).fill(''),
               datasets: [{
-                data: [undefined, ...data],
+                data: [undefined, ...data, undefined],
                 fill: false,
                 backgroundColor: 'transparent',
                 pointBorderColor: 'transparent',
                 pointBorderWidth: 'transparent',
-                borderColor: `hsl(${(this.id + 1) * 50}, 100%, 85%)`,
+                // borderColor: `hsl(${(this.id + 1) * 50}, 100%, 85%)`,
+                borderColor: `#${this.color}`,
                 borderWidth: '7',
                 lineTension: 0.1,
                 borderJoinStyle: 'round',
