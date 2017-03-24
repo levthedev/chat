@@ -1,0 +1,68 @@
+.wrapper {
+  background-color: $light-grey;
+  min-height: 100vh;
+  color: $dark-grey;
+  font-size: 18px;
+}
+
+.settingsHeader {
+  text-align: center;
+  margin: 0 auto;
+  width: 400px;
+  padding-top: 25px;
+  font-size: 24px;
+  color: $dark-grey;
+}
+
+.settings {
+  width: 40vw;
+  min-width: 300px;
+  margin: 0 auto;
+  margin-top: 25px;
+  .setting {
+    padding: 15px;
+    border-bottom: 2px solid $button-hover;
+    height: 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    #name, #profilePic, #color, #emailAddress {
+      height: 25px;
+    }
+    #color, #name, #emailAddress {
+      padding: 5px;
+      font-size: 14px;
+      outline: none;
+      color: $dark-grey;
+      width: 200px;
+    }
+    #profilePic {
+      border-radius: 40px;
+      height: 40px;
+      cursor: pointer;
+      transition: all 0.15s ease-in-out;
+      &:hover {
+        background-color: $button-hover;
+      }
+    }
+  }
+  .saveWrapper {
+    margin-top: 25px;
+    margin-left: 15px;
+    .save {
+      display: inline-block;
+      padding: 7px;
+      font-size: 20px;
+      border: 2px solid $primary-color;
+      border-radius: 3px;
+      background-color: $light-grey;
+      color: $primary-color;
+      cursor: pointer;
+      transition: all 0.2s ease-in-out;
+      &:hover {
+        background-color: $primary-color;
+        color: white;
+      }
+    }
+  }
+}

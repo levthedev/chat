@@ -12,7 +12,6 @@
     props: ['chartData', 'days', 'id', 'color'],
     methods: {
       renderChart(data) {
-        console.log(this.color);
         this.chart = new Chart(
           `chart-${this.id}`, {
             type: 'line',
