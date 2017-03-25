@@ -22,7 +22,7 @@ body {
   border-radius: 60px;
   width: 60px;
   height: 60px;
-  background-color: mediumpurple;
+  background-color: #946ECF;
   background-repeat: no-repeat;
   background-size: 32px auto;
   background-position: center 16px;
@@ -68,7 +68,7 @@ body {
 #header {
   height: 75px;
   width: 380px;
-  background-color: mediumpurple;
+  background-color: #946ECF;
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
   text-align: center;
@@ -93,7 +93,7 @@ body {
   border-radius: 10px;
   background-color: #F3F3F8;
   overflow-x: hidden;
-  border: 1px solid mediumpurple;
+  border: 1px solid #946ECF;
   -webkit-transition: all .15s ease-in;
   -moz-transition: all .15s ease-in;
   -ms-transition: all .15s ease-in;
@@ -128,8 +128,8 @@ body {
   float: right;
   margin-right: 20px;
   color: white;
-  background-color: mediumpurple;
-  border: 1px solid mediumpurple;
+  background-color: #946ECF;
+  border: 1px solid #946ECF;
 }
 
 .company {
@@ -198,7 +198,7 @@ body {
   width: 380px;
   text-align: center;
   font-size: 12px;
-  color: mediumpurple;
+  color: #946ECF;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -207,7 +207,7 @@ body {
 
 #powered a, #powered a:visited, #powered a:active {
   text-decoration: none;
-  color: mediumpurple;
+  color: #946ECF;
 }
 
 #typingIndicator {

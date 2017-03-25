@@ -42,8 +42,11 @@
         </span>
       </span> -->
       <span class="insight" @click="log(userReplyRateData())">
+        {{log(userReplyRateData())}}
         <Chart class="chart" :color="'e6a56e'" :id="5" :days=days :chartData="userReplyRateData()" />
-        <span class='number'>{{ Math.round(objectsSinceDate(users).length / objectsSinceDate(allUsers).length * 100) || 0 }}%</span>
+        <span class='number'>
+          {{ Math.round(objectsSinceDate(users).length / objectsSinceDate(allUsers).length * 100) || 0 }}%
+        </span>
         <span class='statWrapper'>
           <span class='stat'>Active User Rate</span>
           <span class='statDescription'>Percentage of users who begin a chat</span>
@@ -101,7 +104,7 @@
         const activeUsersByDay = this.groupByDate(this.objectsSinceDate(this.users));
         return activeUsersByDay.map((count, i) => { //eslint-disable-line
           if (count === 0 && allUsersByDay[i] === 0) return 100;
-          return (count * 100) / allUsersByDay[i];
+          return ((count * 100) / allUsersByDay[i]) || 0;
         });
       },
       closedChats() {
@@ -172,7 +175,11 @@
         });
 
         collection.forEach((object) => {
-          groups[moment(object[param]).format('YYYY-MMM-D')] += 1;
+          if (parseInt(groups[moment(object[param]).format('YYYY-MMM-D')], 10) >= 0) {
+            groups[moment(object[param]).format('YYYY-MMM-D')] += 1;
+          } else {
+            groups[moment(object[param]).format('YYYY-MMM-D')] = 0;
+          }
         });
 
         return Object.values(groups).reverse();

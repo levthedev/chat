@@ -12,18 +12,18 @@
     props: ['chartData', 'days', 'id', 'color'],
     methods: {
       renderChart(data) {
+        const cleanData = data.filter(n => !isNaN(n));
         this.chart = new Chart(
           `chart-${this.id}`, {
             type: 'line',
             data: {
-              labels: new Array((this.days + 1) + Math.round(this.days / 7)).fill(''),
+              labels: new Array((cleanData.length + 1) + Math.round(cleanData.length / 7)).fill(''),
               datasets: [{
-                data: [undefined, ...data, undefined],
+                data: [undefined, ...data],
                 fill: false,
                 backgroundColor: 'transparent',
                 pointBorderColor: 'transparent',
                 pointBorderWidth: 'transparent',
-                // borderColor: `hsl(${(this.id + 1) * 50}, 100%, 85%)`,
                 borderColor: `#${this.color}`,
                 borderWidth: '7',
                 lineTension: 0.1,
@@ -38,8 +38,8 @@
                 yAxes: [{
                   display: false,
                   ticks: {
-                    max: ((Math.max(...data) + (Math.max(...data) / 10)) || 5),
-                    min: ((((Math.min(...data)) - (Math.max(...data))) / 5) || -1),
+                    max: ((Math.max(...cleanData) + (Math.max(...cleanData) / 10)) || 5),
+                    min: ((((Math.min(...cleanData)) - (Math.max(...cleanData))) / 5) || -1),
                   },
                 }],
                 xAxes: [{ display: false }],
@@ -57,6 +57,7 @@
     watch: {
       chartData: {
         handler(newData, oldData) {
+          const cleanData = newData.filter(n => !isNaN(n));
           if (oldData) {
             if (oldData.length === newData.length) {
               newData.forEach((data, i) => {
@@ -64,8 +65,8 @@
               });
               const ticks = this.chart.options.scales.yAxes[0].ticks;
               if (ticks) {
-                ticks.max = ((Math.max(...newData) + (Math.max(...newData) / 10)) || 5);
-                ticks.min = ((((Math.min(...newData)) - (Math.max(...newData))) / 5) || -1);
+                ticks.max = ((Math.max(...cleanData) + (Math.max(...cleanData) / 10)) || 5);
+                ticks.min = ((((Math.min(...cleanData)) - (Math.max(...cleanData))) / 5) || -1);
               }
               this.chart.update();
             } else {

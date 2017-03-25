@@ -4,11 +4,12 @@
   width: 100vw;
   height: 50px;
   background-color: $primary-color;
+  border-bottom: 1px solid $button-hover;
 }
 
 .title {
   font-family: 'Pacifico', Helvetica, Arial;
-  color: $light-grey;
+  color: white;
   font-size: 25px;
   line-height: 50px;
   margin-left: 20px;
@@ -23,7 +24,7 @@
 }
 
 .navbarLink {
-  color: $light-grey;
+  color: white;
   text-decoration: none;
   margin-right: 15px;
   padding: 5px;

@@ -39,6 +39,7 @@
 
 .activeToggle {
   background-color: $light-grey;
+  text-decoration: underline;
 }
 
 .singleUser {
@@ -58,6 +59,7 @@
   margin-left: 5px;
   margin-top: 5px;
   position: relative;
+  color: $dark-grey;
 }
 
 .letterWrapper {
