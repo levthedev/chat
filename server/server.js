@@ -1,11 +1,45 @@
-const app = require('express')()
+const express = require('express')
+const app = express()
+const bodyParser = require('body-parser')
+const flash = require('connect-flash');
+const path = require('path')
 const Sequelize = require('sequelize')
+const bcrypt = require('bcrypt')
 const moment = require('moment')
 const session = require('express-session')
 const http = require('http').Server(app)
 const io = require('socket.io')(http)
+const passport = require('passport')
+const LocalStrategy = require('passport-local').Strategy;
 
 const sequelize = new Sequelize('sqlite://database.db/', { logging: false })
+
+const Agent = sequelize.define('agent',
+{
+  email: {
+    type: Sequelize.STRING,
+    allowNull: false,
+    unique: true
+  },
+  password: { type: Sequelize.STRING },
+},
+{
+  hooks: {
+    beforeCreate: function(agent, options, next) {
+      bcrypt.genSalt(10, (err, salt) => {
+        bcrypt.hash(agent.password, salt, (err, hash) => {
+          agent.password = hash
+          next(null, agent)
+        });
+      });
+    }
+  },
+  instanceMethods: {
+    validPassword: function(password) {
+      return bcrypt.compareSync(password, this.password)
+    }
+  }
+})
 
 const Message = sequelize.define('message', {
   text: { type: Sequelize.STRING },
@@ -24,17 +58,17 @@ const User = sequelize.define('user', {
   lastMessageDate: { type: Sequelize.DATE }
 })
 
-let userRooms = []
-
+Agent.hasMany(User)
 User.hasMany(Message)
 Message.sync()
 User.sync()
+Agent.sync()
 
 const production = process.env.NODE_ENV === 'production'
 const domain = production ? '174.138.71.184' : 'localhost'
 
 sessionMiddleware = session({
-  secret: 'keyboard cat',
+  secret: 'neb: "Iyono"',
   resave: false,
   saveUninitialized: false,
   cookie: {
@@ -44,12 +78,64 @@ sessionMiddleware = session({
   }
 })
 
+app.use(express.static('marketing'));
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
 app.use(sessionMiddleware)
+app.use(passport.initialize())
+app.use(passport.session())
+app.use(flash())
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*')
   res.header('Access-Control-Allow-Credentials', 'true')
   next()
+})
+
+passport.use(new LocalStrategy({ usernameField: 'email' }, function(email, password, done) {
+  Agent.findOne({ where: { email: email } }).then((agent) => {
+    if (!agent) {
+      return done(null, false, { message: 'Incorrect username.' })
+    }
+    if (!agent.validPassword(password)) {
+      return done(null, false, { message: 'Incorrect password.' })
+    }
+    return done(null, agent)
+  }).catch(err => done(err))
+}))
+
+passport.serializeUser((agent, done) => {
+  done(null, agent.id)
+})
+
+passport.deserializeUser((id, done) => {
+  Agent.findById(id).then(agent => {
+    done(null, agent)
+  })
+})
+
+app.get('/login', (req, res) => {
+  res.sendFile(__dirname + '/marketing/login.html')
+})
+
+app.post('/login',
+  passport.authenticate('local', { successRedirect: `http://${domain}:8080`, failureRedirect: '/login', failureFlash: true })
+)
+
+app.get('/register', (req, res) => {
+  res.sendFile(__dirname + '/marketing/register.html')
+})
+
+app.post('/register', (req, res) => {
+  const email = req.body.email
+  const password = req.body.password
+  Agent.create({ email, password })
+  res.redirect('login')
+})
+
+app.get('/logout', (req, res) => {
+  req.logout()
+  res.redirect('/login')
 })
 
 const adjectives = ['slow', 'fast', 'small', 'big', 'young', 'baby', 'happy', 'excited', 'sleepy', 'drowsy', 'clever', 'energetic', 'brave', 'little', 'quiet', 'jolly', 'eager', 'calm', 'curious', 'bouncy', 'graceful', 'rare', 'lucky']
@@ -59,19 +145,20 @@ app.get('/chat.js', (req, res) => {
   res.sendFile(__dirname + '/chat/chat.js')
   const number = Math.floor(Math.random() * 1000)
   sample = (array) => array[Math.floor(Math.random() * array.length)]
-  req.session.user = req.session.user || [sample(adjectives), sample(animals), number].join('-')
+  req.session.handle = req.session.handle || [sample(adjectives), sample(animals), number].join('-')
 
-  User.findOne({ where: { handle: req.session.user }}).then(user => {
+  console.log('gonna start looking')
+  User.findOne({ where: { handle: req.session.handle }}).then(user => {
     if (user) {
       user.increment(['sessions'], { by: 1 })
     } else {
       const color = `hsl(${Math.floor(Math.random() * 360)}, 100%, 80%)`
-      User.create({ handle: req.session.user, color, closed: false, sessions: 1 })
+      User.create({ handle: req.session.handle, color, closed: false, sessions: 1 })
     }
-  })
+  }).catch(err => console.log('**ERROR**', err))
 })
 
-app.get('/styles.css', (req, res) => {
+app.get('/chatStyles', (req, res) => {
   res.sendFile(__dirname + '/chat/styles.css')
 })
 
@@ -152,12 +239,14 @@ function randomMessage() {
   return { text, sender, createdAt: randomDate() }
 }
 
+let userRooms = []
+
 io.use((socket, next) => {
   sessionMiddleware(socket.request, socket.request.res, next)
 })
 
 io.on('connection', (socket) => {
-  const handle = socket.request.session.user
+  const handle = socket.request.session.handle
   let currentUser = false
 
   if (!currentUser) {

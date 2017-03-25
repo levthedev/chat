@@ -1,5 +1,5 @@
 var baseHref = 'http://174.138.71.184'
-if (window.location.href === 'http://localhost:8000/test.html') {
+if (window.location.href.includes('localhost')) {
   baseHref = 'http://localhost'
 }
 baseHref += ':3000'
@@ -119,7 +119,7 @@ function createSocket() {
 
 function addStyleSheet() {
   var link = document.createElement('link');
-  link.href = baseHref + '/styles.css';
+  link.href = baseHref + '/chatStyles';
   link.type = 'text/css';
   link.rel = 'stylesheet';
   document.body.appendChild(link);

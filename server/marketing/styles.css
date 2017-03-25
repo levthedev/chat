@@ -1,0 +1,136 @@
+@import url('https://fonts.googleapis.com/css?family=Pacifico');
+
+body {
+  font-family: sans-serif, Roboto, Helvetica;
+}
+
+.wrapper {
+  width: 100vw;
+}
+
+.navbar {
+  height: 75px;
+  width: 100vw;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background-color: #F3F3F8;
+  position: sticky;
+}
+
+.navbarLinks {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 300px;
+}
+
+.red { color: #d95a88; border-bottom: 1px solid #d95a88; }
+.blue { color: #4d9bd8; border-bottom: 1px solid #4d9bd8; }
+.orange { color: #e6a56e; border-bottom: 1px solid #e6a56e; }
+.green { color: #3dc06c; border-bottom: 1px solid #3dc06c; }
+
+.red, .blue, .orange, .green {
+  padding-bottom: 3px;
+}
+
+.logoWrapper {
+  width: 600px;
+}
+
+.logo {
+  font-family: 'Pacifico', Helvetica, Arial;
+  font-size: 35px;
+  color: #956bc3;
+  cursor: pointer;
+  display: inline-block;
+}
+
+.link a {
+  text-decoration: none;
+}
+
+.main {
+  width: 100vw;
+  height: calc(100vh - 75px);
+  background-color: #F3F3F8;
+}
+
+.headerimage {
+  position: absolute;
+  z-index: 0;
+  width: 100%;
+  background-color: #F3F3F8;
+}
+
+#backshape .diagonalWrapper {
+  z-index: 0;
+  width: 100vw;
+  margin: 50px auto 200px;
+  transform: skew(0deg, 5deg);
+  -ms-transform: skew(0deg, 10deg);
+  -webkit-transform: skew(0deg, 5deg);
+}
+
+#backshape {
+  height: 500px;
+  z-index: 0;
+  width: 100vw;
+  margin-top: 75px;
+  float: left;
+  background: #DFDFEC;
+  transform: skew(0deg, -10deg);
+  -ms-transform: skew(0deg, -10deg);
+  -webkit-transform: skew(0deg, -5deg);
+}
+
+.taglineImageWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding-top: 50px;
+  z-index: 1;
+}
+
+.tagline {
+  font-size: 24px;
+  color: #5E6C7D;
+  width: 300px;
+  height: 300px;
+}
+
+.subTagline {
+  font-size: 18px;
+  margin-top: 25px;
+  font-weight: 300;
+}
+
+.browser-mockup {
+  border-top: 2em solid rgba(230, 230, 230, 0.7);
+  box-shadow: 0 0.1em 1em 0 rgba(0, 0, 0, 0.3);
+  position: relative;
+  border-radius: 3px 3px 0 0;
+  z-index: 1;
+}
+
+.browser-mockup:before {
+  display: block;
+  position: absolute;
+  content: '';
+  top: -1.25em;
+  left: 1em;
+  width: 0.5em;
+  height: 0.5em;
+  border-radius: 50%;
+  background-color: #f44;
+  box-shadow: 0 0 0 2px #f44, 1.5em 0 0 2px #9b3, 3em 0 0 2px #fb5;
+}
+
+.browser-mockup > * {
+  display: block;
+}
+
+.browser-mockup img {
+  width: 600px;
+  height: auto;
+}

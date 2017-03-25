@@ -10,6 +10,10 @@ body {
   -o-transition: none !important;
 }
 
+#closed, #open, #container {
+  z-index: 10;
+}
+
 #closed, #open {
   position: fixed;
   bottom: 25px;
