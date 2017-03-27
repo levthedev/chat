@@ -7,6 +7,7 @@
     <link rel="stylesheet" type="text/css" href="./styles.css">
     <script src="/socket.io/socket.io.js"></script>
     <script src="/chat.js"></script>
+    <script src="./client.js"></script>
   </head>
   <body>
     <div class"wrapper">
@@ -33,6 +34,10 @@
             <br>
             It's the perfect solution for small startups, solo founders, and side projects who are looking to save money and support open source software.
           </div>
+          <div class="buttons">
+            <a href="/register"><div class="button signup">Signup</div></a>
+            <a href="https://github.com/levthedev/chat"><div class="button github">GitHub</div></a>
+          </div>
         </div>
       </div>
       <div class="triangle" id="features"></div>
@@ -40,7 +45,7 @@
         <div class="featuresHeader red">
           Features
         </div>
-        <div class="features">
+        <div id="allFeatures" class="defaultFade">
           <div class="feature">
             <div class="featureTitle">
               Open Source
@@ -96,15 +101,15 @@
             </div>
             <div class="featureDescription">
               If you don't want to set up HumbleChat on your own server,
-              let us host it for you! We host HumbleChat for as low as $5/month.
+              let us host it for you! We host HumbleChat for as low as $9/month.
             </div>
           </div> -->
         </div>
       </div>
       <div class="triangle reversed" id="pricing"></div>
-      <div class="pricingWrapper">
-        <div class="featuresHeader orange">Pricing</div>
-        <div class="prices">
+      <div id="pricingWrapper">
+        <div class="featuresHeader orange" id="pricingHeader">Pricing</div>
+        <div id="prices" class="defaultFade">
           <div class="price">
             <div class="priceHeader">Free</div>
             <div class="priceAmount green">
@@ -127,14 +132,14 @@
                 Best Effort Support
               </div>
               <div class="priceNote">
-                This plan requires you to install and configure HumbleChat on your own server, and is recommended for developers.
+                This plan requires you to <strong>install</strong> and <strong>configure</strong> HumbleChat on your own server, and is recommended for <strong>developers</strong>.
               </div>
             </div>
           </div>
           <div class="price">
             <div class="priceHeader">Basic</div>
             <div class="priceAmount blue">
-              $5<span class="month">/mo</span>
+              $9<span class="month">/mo</span>
             </div>
             <div class="priceDescription">
               <div class="priceFeature">
@@ -153,7 +158,7 @@
                 48 Hour Support
               </div>
               <div class="priceNote">
-                This plan is hosted and can be set up by anyone in 2 minutes. It is best suited for solo founders.
+                This plan is <strong>hosted</strong> and can be set up by anyone in 2 minutes. It is best suited for <strong>solo founders</strong>.
               </div>
             </div>
           </div>
@@ -179,16 +184,16 @@
                 12 Hour Support
               </div>
               <div class="priceNote">
-                This plan is hosted and can be set up by anyone in 2 minutes. It is best suited for startups.
+                This plan is <strong>hosted</strong> and can be set up by anyone in 2 minutes. It is best suited for <strong>startups</strong>.
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div class="triangle" id="features"></div>
+      <div class="triangle"></div>
       <div class="footer">
         <div class="made">
-          Made with <img src="./bolt.png" /> by
+          Made with <img src="./heart.png" /> by
           <a class="purple" href="https://lev.io">Lev</a>
         </div>
         <!-- Our privacy policy: we will never sell any of your data, collect data we don't need to operate HumbleChat, or spam you. -->

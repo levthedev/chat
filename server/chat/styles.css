@@ -10,8 +10,12 @@ body {
   -o-transition: none !important;
 }
 
-#closed, #open, #container {
+#closed, #open {
   z-index: 10;
+}
+
+.zIndex {
+  z-index: -10!important;
 }
 
 #closed, #open {

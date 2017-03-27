@@ -81,6 +81,48 @@ body {
   font-weight: 300;
 }
 
+.buttons {
+  margin-top: 25px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.buttons a {
+  text-decoration: none;
+}
+
+.button {
+  margin-right: 15px;
+  border: 2px solid #5E6C7D;
+  color: #5E6C7D;
+  border-radius: 4px;
+  padding: 7px;
+  font-size: 20px;
+  cursor: pointer;
+  box-shadow: 0 0.1em 1em 0 rgba(0, 0, 0, 0.1);
+}
+
+.signup {
+  background-color: #946ECF;
+  border: 2px solid #946ECF;
+  color: white;
+}
+
+.signup:hover {
+  background-color: #6739ac;
+  border: 2px solid #6739ac;
+}
+
+.signup, .github {
+  transition: all 0.2s ease-in-out;
+}
+
+.github:hover {
+  color: white;
+  background-color: #5E6C7D;
+}
+
 .browserMockup {
   border-top: 2em solid rgba(230, 230, 230, 0.7);
   box-shadow: 0 0.1em 1em 0 rgba(0, 0, 0, 0.3);
@@ -123,7 +165,7 @@ body {
   cursor: pointer;
 }
 
-.features {
+#allFeatures {
   margin-top: 30px;
   font-size: 16px;
   display: flex;
@@ -166,13 +208,22 @@ body {
   width: 50px;
 }
 
-.pricingWrapper {
+#pricingWrapper {
   width: 100vw;
   margin-bottom: 25px;
   text-align: center;
 }
 
-.prices {
+.fadeIn {
+  opacity: 1 !important;
+}
+
+.defaultFade {
+  opacity: 0;
+  transition: all 1s ease-in-out;
+}
+
+#prices {
   display: flex;
   justify-content: center;
   align-items: center;

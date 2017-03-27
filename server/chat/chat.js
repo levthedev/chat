@@ -6,6 +6,7 @@ baseHref += ':3000'
 
 function toggleChat() {
   document.getElementById('container').classList.remove('preload');
+  document.getElementById('conversation').classList.toggle('zIndex');
   var state = this.id;
   var open = document.getElementById('open');
   var closed = document.getElementById('closed');
@@ -145,6 +146,7 @@ function createChatWidget() {;
   container.className = 'preload';
   var conversation = document.createElement('div');
   conversation.id = 'conversation';
+  conversation.classList.add('zIndex');
   conversation.style.opacity = 0;
   var header = document.createElement('div');
   header.id = 'header';
