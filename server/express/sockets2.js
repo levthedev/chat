@@ -8,6 +8,7 @@ io.use((socket, next) => {
 })
 
 io.on('connection', (socket) => {
+  console.log('CONNECTION made. Session: ', socket.request.session)
   const handle = socket.request.session.handle
   const isAgent = socket.request.session.passport
   let currentUser = false

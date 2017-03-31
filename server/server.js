@@ -19,15 +19,17 @@ app.get('/chat', (req, res) => {
     where: { url },
     include: [{ model: User }]
   }).then((agent) => {
-    console.log('Agent is ', agent)
-    const user = agent.users.filter((u) => { u.handle === req.session.handle })[0]
-    if (user) {
-      user.increment(['sessions'], { by: 1 })
-    } else {
-      const color = `hsl(${Math.floor(Math.random() * 360)}, 100%, 80%)`
-      User.create({ handle: req.session.handle, color, closed: false, sessions: 1 }).then((user) => {
-        agent.addUser(user)
-      })
+    if (agent) {
+      console.log('Agent is ', agent)
+      const user = agent.users.filter((u) => { u.handle === req.session.handle })[0]
+      if (user) {
+        user.increment(['sessions'], { by: 1 })
+      } else {
+        const color = `hsl(${Math.floor(Math.random() * 360)}, 100%, 80%)`
+        User.create({ handle: req.session.handle, color, closed: false, sessions: 1 }).then((user) => {
+          agent.addUser(user)
+        })
+      }
     }
   })
 })
@@ -53,6 +55,7 @@ function getUsers(res, options) {
 }
 
 app.get('/users', (req, res) => {
+  console.log('SESSION: ', req.session)
   const id = req.session.passport.user
   getUsers(res, { all: false, id })
 })
