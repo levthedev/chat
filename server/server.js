@@ -4,7 +4,16 @@ const { app } = require('./express/auth')
 const { seed, sample, adjectives, animals } = require('./express/seed')
 const { http } = require('./express/sockets2')
 
-app.get('/dashboard', (req, res) => {
+function authenticate(req, res, next) {
+  if (req.session.passport) {
+    if (req.session.passport.user) {
+      return next();
+    }
+  }
+  res.redirect('/');
+}
+
+app.get('/dashboard', authenticate, (req, res) => {
   res.sendFile(__dirname + '/dashboard/dist/index.html')
 })
 
@@ -54,13 +63,13 @@ function getUsers(res, options) {
   })
 }
 
-app.get('/users', (req, res) => {
+app.get('/users', authenticate, (req, res) => {
   console.log('SESSION: ', req.session)
   const id = req.session.passport.user
   getUsers(res, { all: false, id })
 })
 
-app.get('/allUsers', (req, res) => {
+app.get('/allUsers', authenticate, (req, res) => {
   const id = req.session.passport.user
   getUsers(res, { all: true, id })
 })

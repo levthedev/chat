@@ -4,29 +4,34 @@ const { Agent, User, Message } = require('./database')
 
 function seed() {
   const welcomeMessage = Message.create({ text: 'Welcome to HumbleChat! Please let us know if you have any questions.', sender: 'company' }).then(wcMessage => {
-    new Array(240).fill('').forEach(() => {
-      const color = `hsl(${Math.floor(Math.random() * 360)}, 100%, 80%)`
-      const number = Math.floor(Math.random() * 1000)
-      sample = (array) => array[Math.floor(Math.random() * array.length)]
-      const handle = [sample(adjectives), sample(animals), number].join('-')
-      const sessions = Math.floor(Math.random() * 25)
-      User.create({ handle, color, sessions, closed: false, createdAt: randomDate() }, { raw: true }).then((user) => {
-        user.addMessage(wcMessage)
-        if (random() && random() && random()) {
-          const messages = new Array(Math.floor(Math.random() * 15)).fill('')
-          messages.forEach((m) => {
-            Message.create(randomMessage(), { raw: true }).then(message => {
-              user.addMessage(message)
+    Agent.create({ email: 'lev@lev.io', password: 'pwd', url: 'localhost' }).then((agent1) => {
+      Agent.create({ email: 'lev@dev.com', password: 'pwd', url: '4533f8b3.ngrok.io' }).then((agent2) => {
+        new Array(240).fill('').forEach(() => {
+          const color = `hsl(${Math.floor(Math.random() * 360)}, 100%, 80%)`
+          const number = Math.floor(Math.random() * 1000)
+          sample = (array) => array[Math.floor(Math.random() * array.length)]
+          const handle = [sample(adjectives), sample(animals), number].join('-')
+          const sessions = Math.floor(Math.random() * 25)
+          User.create({ handle, color, sessions, closed: false, createdAt: randomDate() }, { raw: true }).then((user) => {
+            user.addMessage(wcMessage)
+            sample([agent1, agent2]).addUser(user)
+            if (random() && random() && random()) {
+              const messages = new Array(Math.floor(Math.random() * 15)).fill('')
+              messages.forEach((m) => {
+                Message.create(randomMessage(), { raw: true }).then(message => {
+                  user.addMessage(message)
+                })
+              })
+            }
+            const closed = random()
+            const online = random()
+            user.update({
+              closed: closed,
+              online: online,
+              closedDate: (closed && randomDate()),
+              lastMessageDate: randomDate()
             })
           })
-        }
-        const closed = random()
-        const online = random()
-        user.update({
-          closed: closed,
-          online: online,
-          closedDate: (closed && randomDate()),
-          lastMessageDate: randomDate()
         })
       })
     })

@@ -82,7 +82,6 @@ export default {
     });
   },
   created() {
-    // this.$socket.emit('joinRooms');
     this.$options.sockets.messageCreated = (message) => {
       const user = this.allUsers.filter(u => u.id === message.userId)[0];
       if (user) {
