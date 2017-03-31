@@ -3,52 +3,41 @@ const { Agent, User, Message } = require('./database')
 const http = require('http').Server(app)
 const io = require('socket.io')(http)
 
-let userRooms = []
-
 io.use((socket, next) => {
   sessionMiddleware(socket.request, socket.request.res, next)
 })
 
 io.on('connection', (socket) => {
   const handle = socket.request.session.handle
-  const url = socket.request.headers.host
+  const isAgent = socket.request.session.passport
   let currentUser = false
-  if (!socket.request.session.passport) {
-    Agent.findOne({
-      where: { url },
-      include: [{
-        model: User,
-        where: { handle },
-        include: [{
-          model: Message,
-        }],
-        order: [[Message, 'createdAt', 'ASC']]
-      }]
-    }).then((agent) => {
-      console.log('URL: ', url)
-      console.log('AGENT: ', agent)
-      Agent.findAll().then((agents) => { agents.map((agent) => console.log(agent.url)) })
-      if (!currentUser && agent) {
-        const user = agent.users[0]
-        console.log(agent.users)
-        if (user) {
-          currentUser = user
-          currentUser.update({ online: true })
-          socket.join(currentUser.handle, () => {
-            userRooms.push(currentUser.handle)
-            if (currentUser.sessions == 1) {
-              currentUser.increment(['sessions'], { by: 1 })
-              Message.create({ text: 'Welcome to HumbleChat! Please let us know if you have any questions.', sender: 'company' }).then(message => {
-                currentUser.addMessage(message).then(() => {
-                  message.reload().then(() => {
-                    io.sockets.in(currentUser.handle).emit('messageCreated', message)
-                  })
-                })
-              })
-            }
+
+  if (isAgent) {
+    const url = socket.request.headers.host
+    const id = socket.request.session.passport.user
+
+    Agent.findById(id, { include: [{ model: User }] }).then((agent) => {
+      console.log('CONNECTION FROM AGENT: ', agent.email)
+      agent.users.map(user => {
+        socket.join(user.handle)
+      })
+    })
+  }
+
+  if (handle) {
+    User.findOne({ where: { handle } }).then(user => {
+      console.log('FOUND USER: ', user.handle)
+      currentUser = user
+      currentUser.update({ online: true })
+      socket.join(currentUser.handle)
+      if (currentUser.sessions == 1) {
+        currentUser.increment(['sessions'], { by: 1 })
+        const text = 'Welcome to HumbleChat! Please let us know if you have any questions.'
+        Message.create({ text, sender: 'company' }).then(message => {
+          currentUser.addMessage(message).then(() => {
+            message.reload().then(() => { socket.emit('messageCreated', message) })
           })
-          socket.emit('messageHistory', user.messages)
-        }
+        })
       }
     })
   }
@@ -75,10 +64,6 @@ io.on('connection', (socket) => {
         })
       })
     })
-  })
-
-  socket.on('joinRooms', () => {
-    userRooms.forEach(room => socket.join(room))
   })
 
   socket.on('toggleConversation', (data) => {

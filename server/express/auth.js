@@ -4,9 +4,11 @@ const bodyParser = require('body-parser')
 const flash = require('connect-flash');
 const session = require('express-session')
 const passport = require('passport')
-const LocalStrategy = require('passport-local').Strategy;
+const LocalStrategy = require('passport-local').Strategy
+const { Agent } = require('./database')
 
 const production = process.env.NODE_ENV === 'production'
+// const production = false
 const domain = production ? '174.138.71.184' : 'localhost'
 
 const sessionMiddleware = session({
@@ -21,6 +23,8 @@ const sessionMiddleware = session({
 })
 
 app.use(express.static('marketing'));
+app.use(express.static('dashboard/dist'));
+app.use(express.static('chat'));
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(sessionMiddleware)
@@ -37,13 +41,15 @@ app.use((req, res, next) => {
 passport.use(new LocalStrategy({ usernameField: 'email' }, function(email, password, done) {
   Agent.findOne({ where: { email: email } }).then((agent) => {
     if (!agent) {
+      console.log('Incorrect username.')
       return done(null, false, { message: 'Incorrect username.' })
     }
     if (!agent.validPassword(password)) {
+      console.log('Incorrect password.')
       return done(null, false, { message: 'Incorrect password.' })
     }
     return done(null, agent)
-  }).catch(err => done(err))
+  }).catch(err => { console.log('ERROR', err); done(err) } )
 }))
 
 passport.serializeUser((agent, done) => {
@@ -56,28 +62,23 @@ passport.deserializeUser((id, done) => {
   })
 })
 
-app.get('/login', (req, res) => {
-  res.sendFile(__dirname + '/marketing/login.html')
-})
-
 app.post('/login',
-  passport.authenticate('local', { successRedirect: `http://${domain}:8080`, failureRedirect: '/login', failureFlash: true })
+  passport.authenticate('local', { successRedirect: `/dashboard`, failureRedirect: '/login.html', failureFlash: true })
+  // passport.authenticate('local', { successRedirect: `http://localhost:8080`, failureRedirect: '/login.html', failureFlash: true })
 )
-
-app.get('/register', (req, res) => {
-  res.sendFile(__dirname + '/marketing/register.html')
-})
 
 app.post('/register', (req, res) => {
   const email = req.body.email
   const password = req.body.password
-  Agent.create({ email, password })
-  res.redirect('login')
+  const url = req.body.url
+  Agent.create({ email, password, url })
+  res.redirect('/login.html')
 })
 
 app.get('/logout', (req, res) => {
+  console.log(req.session)
   req.logout()
-  res.redirect('/login')
+  res.redirect('/login.html')
 })
 
 module.exports = { app, sessionMiddleware }

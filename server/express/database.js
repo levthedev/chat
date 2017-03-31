@@ -1,3 +1,4 @@
+const bcrypt = require('bcrypt')
 const Sequelize = require('sequelize')
 const sequelize = new Sequelize('sqlite://database.db/', { logging: false })
 
@@ -9,6 +10,10 @@ const Agent = sequelize.define('agent',
     unique: true
   },
   password: { type: Sequelize.STRING },
+  url: {
+    type: Sequelize.STRING,
+    unique: true
+  }
 },
 {
   hooks: {
@@ -17,8 +22,8 @@ const Agent = sequelize.define('agent',
         bcrypt.hash(agent.password, salt, (err, hash) => {
           agent.password = hash
           next(null, agent)
-        });
-      });
+        })
+      })
     }
   },
   instanceMethods: {

@@ -74,6 +74,7 @@ export default {
   },
   beforeMount() {
     const production = process.env.NODE_ENV === 'production';
+    // const production = false;
     const domain = production ? '174.138.71.184' : 'localhost';
     this.$http.get(`http://${domain}:3000/users`).then((response) => {
       this.allUsers = response.body;
@@ -81,7 +82,7 @@ export default {
     });
   },
   created() {
-    this.$socket.emit('joinRooms');
+    // this.$socket.emit('joinRooms');
     this.$options.sockets.messageCreated = (message) => {
       const user = this.allUsers.filter(u => u.id === message.userId)[0];
       if (user) {

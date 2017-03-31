@@ -120,7 +120,7 @@ function createSocket() {
 
 function addStyleSheet() {
   var link = document.createElement('link');
-  link.href = baseHref + '/chatStyles';
+  link.href = baseHref + '/chatStyles.css';
   link.type = 'text/css';
   link.rel = 'stylesheet';
   document.body.appendChild(link);

@@ -10,6 +10,7 @@ import Settings from '@/components/Settings';
 Vue.use(Router);
 Vue.use(VueResource);
 const production = process.env.NODE_ENV === 'production';
+// const production = false;
 const domain = production ? '174.138.71.184' : 'localhost';
 Vue.use(VueSocketio, `http://${domain}:3000`);
 
