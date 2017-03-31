@@ -193,7 +193,7 @@
         this.users = response.body;
       });
       this.$http.get(`http://${domain}:3000/allUsers`).then((response) => {
-        this.allUsers = response.body.users;
+        this.allUsers = response.body;
       });
     },
   };
