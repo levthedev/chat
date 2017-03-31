@@ -186,7 +186,7 @@
       },
     },
     beforeMount() {
-      const production = process.env.NODE_ENV === 'production'
+      const production = process.env.NODE_ENV === 'production';
       // const production = false;
       const domain = production ? '174.138.71.184' : 'localhost';
       this.$http.get(`http://${domain}:3000/users`).then((response) => {

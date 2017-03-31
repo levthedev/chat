@@ -52,8 +52,8 @@ const User = sequelize.define('user', {
 
 Agent.hasMany(User)
 User.hasMany(Message)
-Message.sync()
-User.sync()
-Agent.sync()
+Message.sync({force: true})
+User.sync({force: true})
+Agent.sync({force: true})
 
 module.exports = { Agent, User, Message }
